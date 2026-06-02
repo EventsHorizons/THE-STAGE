@@ -129,13 +129,15 @@ const styles = StyleSheet.create({
   },
   dot: {
     width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Colors.border,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: Colors.borderFaint,
   },
   dotActive: {
-    backgroundColor: Colors.primaryAccent,
-    width: 18,
+    backgroundColor: Colors.accentVinotinto,
+    width: 16,
+    height: 2,
+    borderRadius: 1,
   },
   empty: {
     height: 120,

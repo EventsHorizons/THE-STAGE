@@ -6,7 +6,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Inbox } from 'lucide-react-native';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography } from '../theme/constants';
 import { PrimaryButton } from './PrimaryButton';
 
 interface EmptyStateProps {
@@ -42,16 +42,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   title: {
-    color: Colors.text,
-    fontSize: 20,
-    fontFamily: 'Outfit_700Bold',
+    ...Typography.displayName,
+    fontSize: 22,
     textAlign: 'center',
   },
   message: {
-    color: Colors.textMuted,
-    fontSize: 14,
-    fontFamily: 'Outfit_400Regular',
+    ...Typography.body,
     textAlign: 'center',
-    lineHeight: 20,
+    color: Colors.textFaint,
   },
 });

@@ -1,6 +1,5 @@
 /**
- * @file TalentCard — "The Stage"
- * @description Full-screen discover card with swipe engine, overlay info, and action rail.
+ * @file TalentCard — floating discover card (Cursor-minimal)
  */
 
 import React, { memo } from 'react';
@@ -14,9 +13,9 @@ import {
   Pressable,
   Animated,
 } from 'react-native';
-import { Search, Zap } from 'lucide-react-native';
+import { Search, ArrowUpRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography, Glow, Borders } from '../theme/constants';
 import { ArtistProfile } from '../types';
 import type { TalentSwipeAction } from '../navigation/types';
 import { useSwipeGesture } from '../hooks/useSwipeGesture';
@@ -24,6 +23,7 @@ import { ActionButtons } from './ActionButtons';
 import { CategoryChips } from './CategoryChips';
 
 const { width, height } = Dimensions.get('window');
+const CARD_INSET = 10;
 
 interface TalentCardProps {
   readonly artist: ArtistProfile;
@@ -66,13 +66,13 @@ export const TalentCard = memo(function TalentCard({
     handleComplete(action);
   };
 
-  const stackScale = isTopCard ? 1 : 0.96;
-  const stackTranslateY = isTopCard ? 0 : 12;
+  const stackScale = isTopCard ? 1 : 0.97;
+  const stackTranslateY = isTopCard ? 0 : 10;
 
   return (
     <Animated.View
       style={[
-        styles.feedItem,
+        styles.outer,
         {
           zIndex: isTopCard ? 2 : 1,
           transform: [{ scale: stackScale }, { translateY: stackTranslateY }],
@@ -81,123 +81,147 @@ export const TalentCard = memo(function TalentCard({
       ]}
       {...(isTopCard ? panHandlers : {})}
     >
-      <Pressable style={StyleSheet.absoluteFill} onPress={handleTap}>
-        <Image
-          source={{ uri: artist.avatarUrl }}
-          style={styles.backgroundMedia}
-          resizeMode="cover"
+      {isTopCard ? <View style={styles.ambientGlow} pointerEvents="none" /> : null}
+
+      <View style={[styles.cardFrame, isTopCard && styles.cardFrameActive]}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={handleTap}>
+          <Image
+            source={{ uri: artist.avatarUrl }}
+            style={styles.backgroundMedia}
+            resizeMode="cover"
+          />
+        </Pressable>
+
+        <LinearGradient
+          colors={['transparent', 'rgba(11,11,11,0.15)', 'rgba(11,11,11,0.88)']}
+          locations={[0, 0.55, 1]}
+          style={StyleSheet.absoluteFillObject}
+          pointerEvents="none"
         />
-      </Pressable>
 
-      <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.85)']}
-        style={StyleSheet.absoluteFillObject}
-        pointerEvents="none"
-      />
-
-      {isTopCard ? (
-        <>
-          <Animated.View style={[styles.stamp, styles.stampLike, { opacity: likeOpacity }]}>
-            <Text style={styles.stampText}>CONECTAR</Text>
-          </Animated.View>
-          <Animated.View style={[styles.stamp, styles.stampPass, { opacity: passOpacity }]}>
-            <Text style={styles.stampText}>PASAR</Text>
-          </Animated.View>
-          <Animated.View style={[styles.stamp, styles.stampUp, { opacity: bookmarkOpacity }]}>
-            <Text style={styles.stampText}>GUARDAR</Text>
-          </Animated.View>
-        </>
-      ) : null}
-
-      <View style={styles.topBar} pointerEvents="box-none">
-        <Text style={styles.brandText}>THE STAGE</Text>
-        <View style={styles.topTabs}>
-          <TouchableOpacity style={styles.topTabActive}>
-            <Text style={styles.topTabTextActive}>Trending</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.topTab}>
-            <Text style={styles.topTabText}>Nearby</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.searchBtn}>
-          <Search size={22} color="#FFF" />
-        </TouchableOpacity>
-      </View>
-
-      {isTopCard ? (
-        <ActionButtons onAction={triggerAction} />
-      ) : null}
-
-      <View style={styles.artistInfo} pointerEvents="box-none">
-        <View style={styles.badgeContainer}>
-          <Text style={styles.badgeText}>SPOTLIGHT ARTIST</Text>
-        </View>
-        <Text style={styles.artistName}>{artist.name}</Text>
-        <Text style={styles.artistCategory}>
-          {artist.displayCategory ?? artist.category}
-        </Text>
-        {artist.location?.city ? (
-          <Text style={styles.locationText}>{artist.location.city}</Text>
-        ) : null}
-        <CategoryChips items={skills} maxVisible={4} />
-        <Text style={styles.artistBio} numberOfLines={2}>
-          {artist.bio}
-        </Text>
-        {artist.availability ? (
-          <Text style={styles.availability}>Disponible ahora</Text>
+        {isTopCard ? (
+          <>
+            <Animated.View style={[styles.stamp, styles.stampLike, { opacity: likeOpacity }]}>
+              <Text style={styles.stampText}>Conectar</Text>
+            </Animated.View>
+            <Animated.View style={[styles.stamp, styles.stampPass, { opacity: passOpacity }]}>
+              <Text style={styles.stampText}>Pasar</Text>
+            </Animated.View>
+            <Animated.View style={[styles.stamp, styles.stampUp, { opacity: bookmarkOpacity }]}>
+              <Text style={styles.stampText}>Guardar</Text>
+            </Animated.View>
+          </>
         ) : null}
 
-        <TouchableOpacity style={styles.mainCta} onPress={onTap}>
-          <Text style={styles.mainCtaText}>Ver Portafolio</Text>
-          <Zap size={16} color="#FFF" fill="#FFF" />
-        </TouchableOpacity>
+        <View style={styles.topBar} pointerEvents="box-none">
+          <Text style={styles.brandText}>The Stage</Text>
+          <View style={styles.topTabs}>
+            <TouchableOpacity style={styles.topTabActive}>
+              <Text style={styles.topTabTextActive}>Trending</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.topTab}>
+              <Text style={styles.topTabText}>Nearby</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.searchBtn}>
+            <Search size={18} color={Colors.textFaint} strokeWidth={1.5} />
+          </TouchableOpacity>
+        </View>
+
+        {isTopCard ? <ActionButtons onAction={triggerAction} /> : null}
+
+        <View style={styles.artistInfo} pointerEvents="box-none">
+          <Text style={styles.eyebrow}>Spotlight</Text>
+          <Text style={styles.artistName}>{artist.name}</Text>
+          <Text style={styles.artistCategory}>
+            {artist.displayCategory ?? artist.category}
+          </Text>
+          {artist.location?.city ? (
+            <Text style={styles.locationText}>{artist.location.city}</Text>
+          ) : null}
+          <CategoryChips items={skills} maxVisible={4} />
+          <Text style={styles.artistBio} numberOfLines={2}>
+            {artist.bio}
+          </Text>
+          {artist.availability ? (
+            <Text style={styles.availability}>Disponible</Text>
+          ) : null}
+
+          <TouchableOpacity style={styles.mainCta} onPress={onTap} activeOpacity={0.75}>
+            <Text style={styles.mainCtaText}>Ver portafolio</Text>
+            <ArrowUpRight size={14} color={Colors.textMuted} strokeWidth={1.5} />
+          </TouchableOpacity>
+        </View>
       </View>
     </Animated.View>
   );
 });
 
 const styles = StyleSheet.create({
-  feedItem: {
+  outer: {
     ...StyleSheet.absoluteFillObject,
     width,
     height,
+    paddingHorizontal: CARD_INSET,
+    paddingTop: CARD_INSET,
+    paddingBottom: CARD_INSET + 72,
+  },
+  ambientGlow: {
+    position: 'absolute',
+    top: '12%',
+    left: '8%',
+    right: '8%',
+    bottom: '18%',
+    borderRadius: Borders.radiusLg,
+    backgroundColor: Colors.accentGlowAmbient,
+    ...Glow.cardAmbient,
+  },
+  cardFrame: {
+    flex: 1,
+    borderRadius: Borders.radiusLg,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.borderFaint,
+    backgroundColor: Colors.background,
+  },
+  cardFrameActive: {
+    borderColor: Colors.border,
+    ...Glow.interactive,
   },
   backgroundMedia: {
     ...StyleSheet.absoluteFillObject,
   },
   stamp: {
     position: 'absolute',
-    top: 120,
+    top: 100,
     zIndex: 20,
-    borderWidth: 3,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: Borders.radiusSm,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(11, 11, 11, 0.4)',
   },
   stampLike: {
-    left: 24,
+    left: 28,
     borderColor: Colors.verified,
-    transform: [{ rotate: '-12deg' }],
+    transform: [{ rotate: '-8deg' }],
   },
   stampPass: {
-    right: 24,
-    borderColor: '#FF4458',
-    transform: [{ rotate: '12deg' }],
+    right: 28,
+    borderColor: Colors.pass,
+    transform: [{ rotate: '8deg' }],
   },
   stampUp: {
     alignSelf: 'center',
-    left: width / 2 - 60,
-    borderColor: Colors.primaryAccent,
+    left: width / 2 - 52,
+    borderColor: Colors.accentBorder,
   },
   stampText: {
-    color: '#FFF',
-    fontSize: 22,
-    fontFamily: 'Outfit_800ExtraBold',
-    letterSpacing: 2,
+    ...Typography.stamp,
   },
   topBar: {
     position: 'absolute',
-    top: 60,
+    top: 48,
     left: 0,
     right: 0,
     flexDirection: 'row',
@@ -207,102 +231,80 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   brandText: {
-    color: '#FFF',
-    fontSize: 14,
-    fontFamily: 'Outfit_800ExtraBold',
-    letterSpacing: 1.5,
+    ...Typography.brand,
   },
   topTabs: {
     flexDirection: 'row',
-    gap: 16,
+    gap: Spacing.md,
   },
   topTabActive: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#FFF',
-    paddingBottom: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.accentBorder,
+    paddingBottom: 6,
   },
   topTab: {
-    paddingBottom: 4,
+    paddingBottom: 6,
   },
   topTabTextActive: {
-    color: '#FFF',
-    fontSize: 14,
-    fontFamily: 'Outfit_700Bold',
+    ...Typography.caption,
+    color: Colors.text,
+    letterSpacing: 0.5,
   },
   topTabText: {
-    color: 'rgba(255,255,255,0.6)',
-    fontSize: 14,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.caption,
   },
   searchBtn: {
-    padding: 4,
+    padding: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border,
+    borderRadius: Borders.radiusFull,
   },
   artistInfo: {
     position: 'absolute',
-    bottom: 120,
+    bottom: Spacing.lg,
     left: Spacing.md,
-    right: 80,
-    gap: 6,
+    right: 72,
+    gap: Spacing.xs,
   },
-  badgeContainer: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 4,
-    borderWidth: 0.5,
-    borderColor: 'rgba(255,255,255,0.3)',
-  },
-  badgeText: {
-    color: '#FFF',
-    fontSize: 9,
-    fontFamily: 'Outfit_800ExtraBold',
-    letterSpacing: 1,
+  eyebrow: {
+    ...Typography.moduleLabel,
+    color: Colors.textFaint,
   },
   artistName: {
-    color: '#FFF',
-    fontSize: 32,
-    fontFamily: 'Outfit_800ExtraBold',
-    letterSpacing: -0.5,
+    ...Typography.displayName,
   },
   artistCategory: {
-    color: Colors.primaryAccent,
-    fontSize: 16,
-    fontFamily: 'Outfit_700Bold',
-    marginTop: -4,
+    ...Typography.subtitle,
   },
   locationText: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 13,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.caption,
+    color: Colors.textMuted,
   },
   artistBio: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: 14,
-    fontFamily: 'Outfit_400Regular',
-    lineHeight: 20,
+    ...Typography.body,
+    marginTop: 4,
   },
   availability: {
+    ...Typography.caption,
     color: Colors.verified,
-    fontSize: 12,
-    fontFamily: 'Outfit_600SemiBold',
+    letterSpacing: 0.8,
   },
   mainCta: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
     alignSelf: 'flex-start',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-    gap: 8,
-    marginTop: 8,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    marginTop: Spacing.sm,
+    gap: 6,
+    borderRadius: Borders.radiusFull,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
   },
   mainCtaText: {
-    color: '#FFF',
-    fontSize: 14,
-    fontFamily: 'Outfit_700Bold',
+    ...Typography.caption,
+    color: Colors.textMuted,
+    letterSpacing: 0.6,
   },
 });

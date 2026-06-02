@@ -1,24 +1,33 @@
 /**
- * @file Design Tokens Specification — "The Stage"
- * @description Core brutalist street-tech theme constants representing dark composition presets.
+ * @file Design Tokens — The Stage (Cursor-minimal aesthetic)
  */
 
+import { CursorBorders, CursorColors, CursorGlow, CursorSpacing, CursorTypography } from './cursor';
+
 export const Colors = {
-  background: '#0B0B0B',       // Figma — Absolute background
-  surface: '#16161A',          // Charcoal Metallic Surface
-  primaryAccent: '#5D2FFA',    // Indigo Primary
-  secondaryAccent: '#8D27F2',  // Purple Secondary
-  accentGradient: ['#5D2FFA', '#8D27F2'],
-  text: '#F4F4F6',             // Clean technical off-white
-  textMuted: '#8E8E93',        // Muted gray
-  border: '#2C2C30',           // Industrial steel borders
-  verified: '#00FF66',         // High-contrast green status
+  background: CursorColors.bgAbsolute,
+  surface: CursorColors.surface,
+  surfaceSolid: CursorColors.surface,
+  surfaceTranslucent: CursorColors.surfaceTranslucent,
+  primaryAccent: CursorColors.accentVinotinto,
+  secondaryAccent: CursorColors.accentVinotintoSoft,
+  accentVinotinto: CursorColors.accentVinotinto,
+  accentGlow: CursorColors.accentGlow,
+  accentGlowAmbient: CursorColors.accentGlowAmbient,
+  accentBorder: CursorColors.accentBorder,
+  accentGradient: [
+    CursorColors.accentVinotintoSoft,
+    CursorColors.accentGlowAmbient,
+  ] as const,
+  text: CursorColors.textPrimary,
+  textMuted: CursorColors.textSecondary,
+  textFaint: CursorColors.textFaint,
+  border: CursorColors.borderHairline,
+  borderFaint: CursorColors.borderFaint,
+  verified: CursorColors.verified,
 };
 
-export const Spacing = {
-  xs: 8,
-  sm: 12,
-  md: 16,
-  lg: 24,
-  xl: 32,
-};
+export const Spacing = CursorSpacing;
+export const Typography = CursorTypography;
+export const Glow = CursorGlow;
+export const Borders = CursorBorders;

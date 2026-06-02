@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet, Dimensions, ViewStyle } from 'react-native';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Borders } from '../theme/constants';
 
 const { width } = Dimensions.get('window');
 
@@ -72,13 +72,13 @@ const styles = StyleSheet.create({
     height: 18,
     width: '55%',
     borderRadius: 6,
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.borderFaint,
   },
   lineNarrow: {
     height: 12,
     width: '35%',
     borderRadius: 6,
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.borderFaint,
   },
   bentoGrid: {
     flexDirection: 'row',

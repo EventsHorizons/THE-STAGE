@@ -25,8 +25,7 @@ import {
   Send, 
   MessageSquare 
 } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography, Glow, Borders } from '../theme/constants';
 import { BentoCard } from '../components/BentoCard';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { Artist } from '../types';
@@ -78,7 +77,7 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
                 </View>
               )}
               <View style={styles.ratingBadge}>
-                <Star size={12} color={Colors.primaryAccent} fill={Colors.primaryAccent} />
+                <Star size={12} color={Colors.accentVinotinto} strokeWidth={1.5} />
                 <Text style={styles.ratingText}>
                   {String(
                     (artist.technicalStats as { overallRating?: string | number } | undefined)
@@ -96,7 +95,7 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
           {/* Bento Card 2: Biometrics & Experience */}
           {artist.stats && (
             <BentoCard style={styles.statsCard}>
-              <Text style={styles.cardTitle}>MÉTRICAS</Text>
+              <Text style={styles.cardTitle}>Métricas</Text>
               <View style={styles.statList}>
                 {artist.stats.heightCm && (
                   <View style={styles.statItem}>
@@ -122,7 +121,7 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
 
           {/* Bento Card 3: Simulated Audio Player */}
           <BentoCard style={styles.playerCard}>
-            <Text style={styles.cardTitle}>PREVIEW AUDIO</Text>
+            <Text style={styles.cardTitle}>Preview audio</Text>
             <Text style={styles.trackTitle} numberOfLines={2}>Capricho Reinterpretation</Text>
             
             <View style={styles.waveformSimulator}>
@@ -133,12 +132,20 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
                     key={idx}
                     style={[
                       styles.waveBar,
-                      { height: heightVal * 0.6 },
+                      { height: heightVal * 0.5 },
                       isPlaying && idx < 6 ? styles.waveBarActive : null,
                     ]}
                   />
                 );
               })}
+            </View>
+            <View style={styles.progressTrack}>
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: isPlaying ? '48%' : '0%' },
+                ]}
+              />
             </View>
 
             <TouchableOpacity
@@ -167,7 +174,7 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
         {/* Bento Card 4: Detailed Biography */}
         {artist.bio && (
           <BentoCard style={styles.bioCard}>
-            <Text style={styles.cardTitle}>BIOGRAFÍA</Text>
+            <Text style={styles.cardTitle}>Biografía</Text>
             <Text style={styles.bioText}>{artist.bio}</Text>
           </BentoCard>
         )}
@@ -204,19 +211,13 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
           <TouchableOpacity style={styles.secondaryActionBtn}>
             <MessageSquare size={20} color={Colors.text} />
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.primaryActionWrapper}
+          <TouchableOpacity
+            style={styles.primaryActionBtn}
             onPress={handleCastingRequest}
+            activeOpacity={0.75}
           >
-            <LinearGradient
-              colors={Colors.accentGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.primaryActionBtn}
-            >
-              <Text style={styles.primaryActionText}>Invitar a Casting</Text>
-              <Send size={18} color="#FFF" />
-            </LinearGradient>
+            <Text style={styles.primaryActionText}>Invitar a casting</Text>
+            <Send size={16} color={Colors.textMuted} strokeWidth={1.5} />
           </TouchableOpacity>
         </View>
       </View>
@@ -232,13 +233,13 @@ const styles = StyleSheet.create({
   scrollContainer: {
     padding: Spacing.md,
     paddingBottom: 150,
-    gap: Spacing.md,
+    gap: Spacing.lg,
   },
   headerCard: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.lg,
-    padding: 20,
+    padding: Spacing.lg,
   },
   profileImageWrapper: {
     position: 'relative',
@@ -246,21 +247,21 @@ const styles = StyleSheet.create({
   portrait: {
     width: 90,
     height: 90,
-    borderRadius: 20,
-    borderWidth: 1,
+    borderRadius: Borders.radiusMd,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border,
   },
   availabilityBadge: {
     position: 'absolute',
     bottom: -8,
     alignSelf: 'center',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceTranslucent,
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 12,
-    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: Borders.radiusFull,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border,
     gap: 4,
   },
@@ -271,20 +272,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.verified,
   },
   availabilityText: {
-    color: Colors.text,
-    fontSize: 8,
-    fontFamily: 'Outfit_700Bold',
-    textTransform: 'uppercase',
+    ...Typography.moduleLabel,
+    fontSize: 9,
   },
   headerMeta: {
     flex: 1,
     gap: 4,
   },
   artistName: {
-    color: Colors.text,
-    fontSize: 24,
-    fontFamily: 'Outfit_800ExtraBold',
-    letterSpacing: -0.5,
+    ...Typography.displayName,
+    fontSize: 26,
   },
   locationRow: {
     flexDirection: 'row',
@@ -292,40 +289,37 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   locationText: {
+    ...Typography.caption,
     color: Colors.textMuted,
-    fontSize: 12,
-    fontFamily: 'Outfit_500Medium',
   },
   ratingBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.03)',
     alignSelf: 'flex-start',
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 8,
     marginTop: 4,
     gap: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.borderFaint,
+    borderRadius: Borders.radiusSm,
   },
   ratingText: {
-    color: Colors.text,
-    fontSize: 10,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.caption,
+    color: Colors.textMuted,
   },
   asymmetricRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: Spacing.sm,
   },
   statsCard: {
     width: '48%',
     gap: Spacing.sm,
   },
   cardTitle: {
-    color: Colors.primaryAccent,
-    fontSize: 10,
-    fontFamily: 'Outfit_800ExtraBold',
-    letterSpacing: 1.2,
-    marginBottom: 4,
+    ...Typography.moduleLabel,
+    marginBottom: Spacing.xs,
   },
   statList: {
     gap: 12,
@@ -335,64 +329,74 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   statLabel: {
-    color: Colors.textMuted,
-    fontSize: 10,
-    fontFamily: 'Outfit_700Bold',
-    textTransform: 'uppercase',
+    ...Typography.moduleLabel,
+    fontSize: 9,
   },
   statValue: {
+    ...Typography.body,
     color: Colors.text,
-    fontSize: 14,
-    fontFamily: 'Outfit_700Bold',
+    fontSize: 15,
   },
   playerCard: {
     width: '48%',
     gap: Spacing.xs,
   },
   trackTitle: {
-    color: Colors.text,
-    fontSize: 12,
-    fontFamily: 'Outfit_600SemiBold',
-    marginBottom: 8,
+    ...Typography.caption,
+    color: Colors.textMuted,
+    marginBottom: Spacing.sm,
   },
   waveformSimulator: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'center',
-    gap: 3,
-    height: 40,
-    marginBottom: 12,
+    gap: 2,
+    height: 36,
+    marginBottom: Spacing.sm,
+    opacity: 0.55,
   },
   waveBar: {
-    width: 3,
+    width: 2,
     backgroundColor: Colors.border,
-    borderRadius: 2,
+    borderRadius: 1,
   },
   waveBarActive: {
-    backgroundColor: Colors.primaryAccent,
+    backgroundColor: Colors.accentVinotinto,
+  },
+  progressTrack: {
+    height: 2,
+    width: '100%',
+    backgroundColor: Colors.borderFaint,
+    borderRadius: 1,
+    marginBottom: Spacing.md,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: 2,
+    backgroundColor: Colors.accentVinotinto,
+    borderRadius: 1,
   },
   playButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    paddingVertical: 8,
-    borderRadius: 12,
+    paddingVertical: Spacing.sm,
+    borderRadius: Borders.radiusSm,
     gap: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border,
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
   },
   playText: {
-    color: Colors.text,
-    fontSize: 10,
-    fontFamily: 'Outfit_800ExtraBold',
+    ...Typography.moduleLabel,
+    fontSize: 9,
+    color: Colors.textMuted,
   },
   bioCard: {
     gap: Spacing.sm,
   },
   bioText: {
-    color: Colors.text,
-    fontSize: 14,
-    fontFamily: 'Outfit_400Regular',
-    lineHeight: 22,
+    ...Typography.body,
   },
   socialCard: {
     gap: Spacing.sm,
@@ -405,20 +409,18 @@ const styles = StyleSheet.create({
   socialBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.05)',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Borders.radiusMd,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.borderFaint,
     gap: 8,
     flex: 1,
     minWidth: '45%',
   },
   socialText: {
-    color: Colors.text,
-    fontSize: 12,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.caption,
+    color: Colors.textMuted,
   },
   footer: {
     position: 'absolute',
@@ -431,7 +433,9 @@ const styles = StyleSheet.create({
   },
   footerBlur: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(9, 9, 10, 0.9)',
+    backgroundColor: 'rgba(11, 11, 11, 0.92)',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: Colors.borderFaint,
   },
   footerContent: {
     flexDirection: 'row',
@@ -439,31 +443,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryActionBtn: {
-    width: 54,
-    height: 54,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    width: 52,
+    height: 52,
+    borderRadius: Borders.radiusMd,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  primaryActionWrapper: {
-    flex: 1,
-    height: 54,
-    borderRadius: 16,
-    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border,
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
   },
   primaryActionBtn: {
     flex: 1,
+    height: 52,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
+    borderRadius: Borders.radiusMd,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.accentBorder,
+    backgroundColor: 'rgba(122, 6, 34, 0.06)',
+    ...Glow.interactive,
   },
   primaryActionText: {
-    color: '#FFF',
-    fontSize: 15,
-    fontFamily: 'Outfit_700Bold',
+    ...Typography.moduleLabel,
+    color: Colors.text,
+    letterSpacing: 1.2,
   },
 });

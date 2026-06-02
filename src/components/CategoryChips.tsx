@@ -1,11 +1,10 @@
 /**
- * @file CategoryChips — "The Stage"
- * @description Horizontal skill / category tags; styling inherits from parent surfaces.
+ * @file CategoryChips — hairline tags
  */
 
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography } from '../theme/constants';
 
 interface CategoryChipsProps {
   readonly items: readonly string[];
@@ -37,19 +36,20 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     gap: Spacing.xs,
-    paddingVertical: 2,
+    paddingVertical: 4,
   },
   chip: {
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderWidth: 0.5,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.border,
   },
   chipText: {
-    color: Colors.text,
+    ...Typography.caption,
     fontSize: 11,
-    fontFamily: 'Outfit_600SemiBold',
+    letterSpacing: 0.4,
+    color: Colors.textMuted,
   },
 });

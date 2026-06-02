@@ -1,12 +1,10 @@
 /**
- * @file PrimaryButton Component — "The Stage"
- * @description Highly-optimized brutalist button utilizing vinotinto branding.
+ * @file PrimaryButton — outline + vinotinto ambient glow (no solid fill)
  */
 
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Glow, Borders, Spacing, Typography } from '../theme/constants';
 
 interface PrimaryButtonProps {
   readonly label: string;
@@ -20,47 +18,37 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   onPress,
   disabled = false,
   style,
-}) => {
-  return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      onPress={onPress}
-      disabled={disabled}
-      style={[styles.container, style]}
-    >
-      <LinearGradient
-        colors={Colors.accentGradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.button, disabled && styles.disabled]}
-      >
-        <Text style={styles.text}>{label}</Text>
-      </LinearGradient>
-    </TouchableOpacity>
-  );
-};
+}) => (
+  <TouchableOpacity
+    activeOpacity={0.75}
+    onPress={onPress}
+    disabled={disabled}
+    style={[styles.container, disabled && styles.disabled, style]}
+  >
+    <Text style={styles.text}>{label}</Text>
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: {
     minHeight: 48,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  button: {
-    flex: 1,
-    paddingVertical: Spacing.sm + 2,
-    paddingHorizontal: Spacing.md,
+    borderRadius: Borders.radiusMd,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.accentBorder,
+    backgroundColor: 'rgba(122, 6, 34, 0.06)',
+    ...Glow.interactive,
   },
   disabled: {
-    opacity: 0.5,
+    opacity: 0.4,
+    borderColor: Colors.border,
   },
   text: {
-    color: '#FFF',
-    fontSize: 14,
-    fontFamily: 'Outfit_700Bold',
-    letterSpacing: 1,
-    textTransform: 'uppercase',
+    ...Typography.moduleLabel,
+    color: Colors.text,
+    letterSpacing: 1.4,
   },
 });

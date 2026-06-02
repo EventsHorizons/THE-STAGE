@@ -1,12 +1,11 @@
 /**
- * @file ToastAlerts — "The Stage"
- * @description Lightweight match / error banners (non-blocking).
+ * @file ToastAlerts — hairline toast with vinotinto edge glow
  */
 
 import React, { useEffect } from 'react';
 import { Animated, Text, StyleSheet, View } from 'react-native';
-import { Zap } from 'lucide-react-native';
-import { Colors, Spacing } from '../theme/constants';
+import { Sparkles } from 'lucide-react-native';
+import { Colors, Spacing, Typography, Glow, Borders } from '../theme/constants';
 
 export type ToastVariant = 'match' | 'error' | 'info';
 
@@ -33,7 +32,7 @@ export const ToastAlerts: React.FC<ToastAlertsProps> = ({
     Animated.spring(translateY, {
       toValue: 0,
       useNativeDriver: true,
-      friction: 7,
+      friction: 8,
     }).start();
 
     const timer = setTimeout(() => {
@@ -52,7 +51,9 @@ export const ToastAlerts: React.FC<ToastAlertsProps> = ({
   return (
     <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
       <View style={[styles.toast, variant === 'match' && styles.toastMatch]}>
-        {variant === 'match' ? <Zap size={18} color="#FFF" fill="#FFF" /> : null}
+        {variant === 'match' ? (
+          <Sparkles size={16} color={Colors.accentVinotinto} strokeWidth={1.5} />
+        ) : null}
         <Text style={styles.text}>{message}</Text>
       </View>
     </Animated.View>
@@ -71,20 +72,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-    backgroundColor: Colors.surface,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
+    backgroundColor: Colors.surfaceTranslucent,
+    borderRadius: Borders.radiusMd,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border,
   },
   toastMatch: {
-    borderColor: Colors.primaryAccent,
+    borderColor: Colors.accentBorder,
+    ...Glow.interactive,
   },
   text: {
-    color: Colors.text,
-    fontSize: 14,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.body,
     flex: 1,
+    fontSize: 13,
   },
 });

@@ -16,8 +16,7 @@ import {
   Image,
 } from 'react-native';
 import { Search, SlidersHorizontal, Star, MapPin, ChevronRight } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography, Glow, Borders } from '../theme/constants';
 import { useNavigation } from '@react-navigation/native';
 import { ArtistProfile } from '../types';
 import { useTalentSearch } from '../hooks/useTalentSearch';
@@ -134,24 +133,25 @@ export const ScoutDashboardScreen: React.FC = () => {
               }}
               style={styles.chipWrapper}
             >
-              {(activeFilter === filter.value || (filter.value === 'available' && onlyAvailable)) ? (
-                <LinearGradient
-                  colors={Colors.accentGradient}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.chip}
+              <View
+                style={[
+                  styles.chip,
+                  (activeFilter === filter.value ||
+                    (filter.value === 'available' && onlyAvailable)) &&
+                    styles.chipActive,
+                ]}
+              >
+                <Text
+                  style={
+                    activeFilter === filter.value ||
+                    (filter.value === 'available' && onlyAvailable)
+                      ? styles.chipTextActive
+                      : styles.chipText
+                  }
                 >
-                  <Text style={styles.chipTextActive}>
-                    {filter.label}
-                  </Text>
-                </LinearGradient>
-              ) : (
-                <View style={styles.chip}>
-                  <Text style={styles.chipText}>
-                    {filter.label}
-                  </Text>
-                </View>
-              )}
+                  {filter.label}
+                </Text>
+              </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -186,20 +186,18 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.sm,
   },
   title: {
+    ...Typography.displayName,
     fontSize: 28,
-    fontFamily: 'Outfit_800ExtraBold',
-    color: Colors.text,
     marginBottom: Spacing.md,
-    letterSpacing: -0.5,
   },
   searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    height: 52,
-    borderWidth: 1,
+    backgroundColor: Colors.surfaceTranslucent,
+    borderRadius: Borders.radiusMd,
+    paddingHorizontal: Spacing.md,
+    height: 50,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border,
   },
   searchIcon: {
@@ -224,25 +222,31 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   chipWrapper: {
-    borderRadius: 25,
-    overflow: 'hidden',
+    borderRadius: Borders.radiusFull,
   },
   chip: {
-    backgroundColor: Colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 1,
+    paddingHorizontal: 18,
+    borderRadius: Borders.radiusFull,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border,
   },
+  chipActive: {
+    borderColor: Colors.accentBorder,
+    backgroundColor: 'rgba(122, 6, 34, 0.08)',
+    ...Glow.interactive,
+  },
   chipText: {
-    color: Colors.text,
-    fontSize: 13,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.caption,
+    color: Colors.textFaint,
+    fontSize: 12,
   },
   chipTextActive: {
-    color: '#FFF',
-    fontSize: 13,
-    fontFamily: 'Outfit_700Bold',
+    ...Typography.caption,
+    color: Colors.text,
+    fontSize: 12,
+    letterSpacing: 0.4,
   },
   gridContent: {
     padding: Spacing.md,
@@ -254,11 +258,11 @@ const styles = StyleSheet.create({
   },
   card: {
     width: COLUMN_WIDTH,
-    backgroundColor: Colors.surface,
-    borderRadius: 20,
+    backgroundColor: Colors.surfaceTranslucent,
+    borderRadius: Borders.radiusMd,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: Colors.border,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.borderFaint,
   },
   cardImageContainer: {
     width: '100%',
@@ -290,14 +294,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   cardName: {
+    ...Typography.body,
+    fontSize: 15,
     color: Colors.text,
-    fontSize: 16,
-    fontFamily: 'Outfit_700Bold',
   },
   cardRole: {
-    color: Colors.primaryAccent,
-    fontSize: 12,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.caption,
+    color: Colors.accentVinotintoSoft,
   },
   cardMetrics: {
     flexDirection: 'row',

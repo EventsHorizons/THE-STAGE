@@ -6,7 +6,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Shield, Bell, CreditCard, LogOut, ChevronRight } from 'lucide-react-native';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography, Borders } from '../theme/constants';
 import { ProfileHeader } from '../components/ProfileHeader';
 
 const SETTINGS_ROWS = [
@@ -48,9 +48,8 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   screenTitle: {
-    color: Colors.text,
+    ...Typography.displayName,
     fontSize: 28,
-    fontFamily: 'Outfit_800ExtraBold',
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
   },
@@ -61,16 +60,16 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.sm,
     padding: Spacing.md,
-    backgroundColor: Colors.surface,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    backgroundColor: Colors.surfaceTranslucent,
+    borderRadius: Borders.radiusMd,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.borderFaint,
   },
   rowLabel: {
     flex: 1,
+    ...Typography.body,
+    fontSize: 14,
     color: Colors.text,
-    fontSize: 15,
-    fontFamily: 'Outfit_600SemiBold',
   },
   logout: {
     marginTop: Spacing.lg,
@@ -78,8 +77,8 @@ const styles = StyleSheet.create({
   },
   logoutLabel: {
     flex: 1,
-    color: '#FF6B6B',
-    fontSize: 15,
-    fontFamily: 'Outfit_600SemiBold',
+    ...Typography.body,
+    color: 'rgba(255, 120, 120, 0.9)',
+    fontSize: 14,
   },
 });

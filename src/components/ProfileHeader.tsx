@@ -1,12 +1,11 @@
 /**
- * @file ProfileHeader — "The Stage"
- * @description Avatar, validation badge, and availability for profile / bento views.
+ * @file ProfileHeader — minimal identity row
  */
 
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { CheckCircle2 } from 'lucide-react-native';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography, Borders } from '../theme/constants';
 
 interface ProfileHeaderProps {
   readonly name: string;
@@ -32,7 +31,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       )}
       {isValidated ? (
         <View style={styles.verifiedBadge}>
-          <CheckCircle2 size={14} color={Colors.verified} fill={Colors.verified} />
+          <CheckCircle2 size={12} color={Colors.verified} strokeWidth={1.5} />
         </View>
       ) : null}
     </View>
@@ -63,11 +62,11 @@ const styles = StyleSheet.create({
   avatar: {
     width: 72,
     height: 72,
-    borderRadius: 36,
+    borderRadius: Borders.radiusMd,
     backgroundColor: Colors.surface,
   },
   avatarPlaceholder: {
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border,
   },
   verifiedBadge: {
@@ -83,14 +82,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   name: {
-    color: Colors.text,
+    ...Typography.displayName,
     fontSize: 22,
-    fontFamily: 'Outfit_800ExtraBold',
   },
   role: {
-    color: Colors.primaryAccent,
-    fontSize: 14,
-    fontFamily: 'Outfit_700Bold',
+    ...Typography.subtitle,
+    fontSize: 13,
   },
   availabilityPill: {
     flexDirection: 'row',
@@ -99,14 +96,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   availabilityDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: Colors.verified,
   },
   availabilityText: {
+    ...Typography.caption,
     color: Colors.textMuted,
-    fontSize: 12,
-    fontFamily: 'Outfit_600SemiBold',
   },
 });

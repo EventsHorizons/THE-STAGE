@@ -1,6 +1,5 @@
 /**
- * @file MainTabNavigator — "The Stage"
- * @description Five-tab bottom navigation: Discover, Explore, Create, Messages, Profile.
+ * @file MainTabNavigator — minimal tab bar
  */
 
 import React, { ComponentType } from 'react';
@@ -13,7 +12,7 @@ import { ScoutDashboardScreen } from '../screens/ScoutDashboardScreen';
 import { CreateScreen } from '../screens/CreateScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileSettingsScreen } from '../screens/ProfileSettingsScreen';
-import { Colors, Spacing } from '../theme/constants';
+import { Colors, Spacing, Typography } from '../theme/constants';
 import {
   RootTabParamList,
   ROOT_TAB_CONFIG,
@@ -39,9 +38,9 @@ export const MainTabNavigator: React.FC = () => (
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarActiveTintColor: Colors.text,
-        tabBarInactiveTintColor: Colors.textMuted,
+        tabBarInactiveTintColor: Colors.textFaint,
         tabBarIcon: ({ color, focused }) => (
-          <Icon size={24} color={color} strokeWidth={focused ? 2.5 : 2} />
+          <Icon size={20} color={color} strokeWidth={focused ? 1.75 : 1.25} />
         ),
         tabBarLabel: meta?.title ?? route.name,
         tabBarLabelStyle: styles.tabLabel,
@@ -59,19 +58,18 @@ export const MainTabNavigator: React.FC = () => (
 const styles = StyleSheet.create({
   tabBar: {
     position: 'absolute',
-    backgroundColor: 'rgba(9, 9, 10, 0.92)',
-    borderTopWidth: 0,
-    height: Platform.OS === 'ios' ? 88 : 68,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 8,
-    paddingTop: 8,
+    backgroundColor: 'rgba(11, 11, 11, 0.94)',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: Colors.borderFaint,
+    height: Platform.OS === 'ios' ? 86 : 66,
+    paddingBottom: Platform.OS === 'ios' ? 22 : 8,
+    paddingTop: 10,
     paddingHorizontal: Spacing.sm,
+    elevation: 0,
   },
   tabLabel: {
+    ...Typography.caption,
     fontSize: 10,
-    fontWeight: '600',
     marginTop: 4,
-  },
-  tabLabelActive: {
-    fontFamily: 'Outfit_700Bold',
   },
 });
