@@ -18,15 +18,13 @@ import {
 import { Search, SlidersHorizontal, Star, MapPin, ChevronRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Spacing } from '../theme/constants';
+import { useNavigation } from '@react-navigation/native';
 import { ArtistProfile } from '../types';
 import { useTalentSearch } from '../hooks/useTalentSearch';
+import type { DiscoverTabNavigationProp } from '../navigation/types';
 
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - Spacing.md * 3) / 2;
-
-interface ScoutDashboardScreenProps {
-  readonly onSelectArtist: (artist: ArtistProfile) => void;
-}
 
 const FILTER_OPTIONS = [
   { label: 'Todos', value: 'all' },
@@ -36,29 +34,19 @@ const FILTER_OPTIONS = [
   { label: 'Artistas', value: 'artist' },
 ];
 
-export const ScoutDashboardScreen: React.FC<ScoutDashboardScreenProps> = ({
-  onSelectArtist,
-}) => {
+export const ScoutDashboardScreen: React.FC = () => {
+  const navigation = useNavigation<DiscoverTabNavigationProp>();
+
+  const onSelectArtist = (artist: ArtistProfile) => {
+    navigation.navigate('TalentDetail', {
+      profileId: artist.id,
+      artist,
+      fromTab: 'Explore',
+    });
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'musician' | 'actor' | 'artist'>('all');
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-
-  const extractRating = (stats: unknown): string => {
-    if (typeof stats === 'object' && stats !== null && Array.isArray((stats as any).skills)) {
-      return String((stats as any).overallRating ?? '5.0');
-    }
-    if (typeof stats === 'object' && stats !== null && typeof (stats as any).overallRating === 'number') {
-      return String((stats as any).overallRating);
-    }
-    return '5.0';
-  };
-
-  const extractFirstSkill = (stats: unknown): string => {
-    if (typeof stats === 'object' && stats !== null && Array.isArray((stats as any).skills)) {
-      return String((stats as any).skills[0] ?? 'Talent');
-    }
-    return 'Talent';
-  };
 
   const { filteredTalent } = useTalentSearch({
     query: searchQuery,
@@ -78,11 +66,11 @@ export const ScoutDashboardScreen: React.FC<ScoutDashboardScreenProps> = ({
       </View>
       <View style={styles.cardInfo}>
         <Text style={styles.cardName} numberOfLines={1}>{item.name}</Text>
-        <Text style={styles.cardRole} numberOfLines={1}>{item.displayCategory ?? item.category}</Text>
+        <Text style={styles.cardRole} numberOfLines={1}>{item.category}</Text>
         <View style={styles.cardMetrics}>
           <View style={styles.metricItem}>
             <Star size={10} color={Colors.primaryAccent} fill={Colors.primaryAccent} />
-            <Text style={styles.metricText}>{extractRating(item.technicalStats)}</Text>
+            <Text style={styles.metricText}>{item.technicalStats?.overallRating || '5.0'}</Text>
           </View>
           <View style={styles.metricItem}>
             <MapPin size={10} color={Colors.textMuted} />
@@ -92,7 +80,7 @@ export const ScoutDashboardScreen: React.FC<ScoutDashboardScreenProps> = ({
         <View style={styles.cardFooter}>
           <View style={styles.cardTag}>
             <Text style={styles.cardTagText}>
-              {extractFirstSkill(item.technicalStats)}
+              {item.technicalStats?.skills[0] || 'Talent'}
             </Text>
           </View>
           <View style={styles.actionBtn}>

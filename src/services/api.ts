@@ -12,24 +12,23 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    Accept: 'application/json',
   },
 });
 
-// Request Interceptor for JWT and security headers
+// Request Interceptor for JWT
 api.interceptors.request.use(
   (config) => {
-    const token = 'MOCK_JWT_TOKEN';
+    // Mock token retrieval from storage
+    const token = 'MOCK_JWT_TOKEN'; 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    config.headers['X-Requested-With'] = 'XMLHttpRequest';
-    config.headers['Cache-Control'] = 'no-cache';
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+// Sanitization Helper
 const sanitizeData = <T>(data: T): T => {
   if (typeof data === 'string') {
     return data.replace(/<[^>]*>?/gm, '') as unknown as T;
@@ -47,6 +46,7 @@ const sanitizeData = <T>(data: T): T => {
   return data;
 };
 
+// Response Interceptor for Sanitization
 api.interceptors.response.use(
   (response) => {
     response.data = sanitizeData(response.data);
@@ -61,18 +61,27 @@ export const fetchTalentFeed = async (): Promise<ArtistProfile[]> => {
 };
 
 export const sendCastingRequest = async (matchData: Partial<CastingMatch>): Promise<CastingMatch> => {
-  const payload = sanitizeData({
-    ...matchData,
-    timestamp: matchData.timestamp instanceof Date ? matchData.timestamp.toISOString() : new Date().toISOString(),
-  });
-
-  const response = await api.post('/casting/match', payload);
+  const response = await api.post('/casting/match', matchData);
   return response.data;
 };
 
 export const updateProfile = async (data: Partial<ArtistProfile>): Promise<ArtistProfile> => {
-  const payload = sanitizeData(data);
-  const response = await api.patch('/profile', payload);
+  const response = await api.patch('/profile', data);
+  return response.data;
+};
+
+export type ConnectionType = 'like' | 'pass' | 'bookmark';
+
+export const recordConnection = async (
+  profileId: string,
+  type: ConnectionType,
+): Promise<{ success: boolean }> => {
+  const response = await api.post('/connections', { profileId, type });
+  return response.data;
+};
+
+export const fetchBookmarks = async (): Promise<readonly string[]> => {
+  const response = await api.get('/connections/bookmarks');
   return response.data;
 };
 

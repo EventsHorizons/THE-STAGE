@@ -30,42 +30,17 @@ import { Colors, Spacing } from '../theme/constants';
 import { BentoCard } from '../components/BentoCard';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { Artist } from '../types';
+import { MOCK_TALENTS } from '../services/mockData';
+import type { TalentDetailScreenProps } from '../navigation/types';
 
-interface ArtistProfileScreenProps {
-  readonly route: {
-    readonly params: {
-      readonly artist: Artist;
-    };
-  };
-  readonly navigation: any;
-}
-
-export const ArtistProfileScreen: React.FC<ArtistProfileScreenProps> = ({
+export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
   route,
   navigation,
 }) => {
-  const { artist } = route.params;
+  const { artist: paramArtist, profileId } = route.params;
+  const artist: Artist =
+    paramArtist ?? MOCK_TALENTS.find((t) => t.id === profileId) ?? MOCK_TALENTS[0];
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-
-  const sanitizeNumber = (value: unknown): number | undefined =>
-    typeof value === 'number' ? value : undefined;
-
-  const sanitizeString = (value: unknown): string =>
-    typeof value === 'string' ? value : '';
-
-  const sanitizeSkills = (value: unknown): string[] =>
-    Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-
-  const displayCategory = artist.displayCategory ?? artist.category;
-  const rating = sanitizeNumber(artist.technicalStats?.overallRating) ?? 4.9;
-  const experienceYears = sanitizeNumber(artist.technicalStats?.experienceYears);
-  const heightCm = sanitizeNumber(artist.technicalStats?.heightCm);
-  const instrument = sanitizeString(
-    artist.technicalStats?.primaryInstrumentOrGenre ?? artist.technicalStats?.instrument,
-  );
-  const skills = sanitizeSkills(artist.technicalStats?.skills);
-  const hasStats = experienceYears !== undefined || heightCm !== undefined || instrument !== '' || skills.length > 0;
-  const hasAudioPreview = !!artist.mediaAssets?.some(asset => asset.type === 'audio' || asset.type === 'video');
 
   const handleCastingRequest = () => {
     Alert.alert(
@@ -101,7 +76,11 @@ export const ArtistProfileScreen: React.FC<ArtistProfileScreenProps> = ({
               <View style={styles.ratingBadge}>
                 <Star size={12} color={Colors.primaryAccent} fill={Colors.primaryAccent} />
                 <Text style={styles.ratingText}>
-                  {rating} (48 Reseñas)
+                  {String(
+                    (artist.technicalStats as { overallRating?: string | number } | undefined)
+                      ?.overallRating ?? '4.9',
+                  )}{' '}
+                  (48 Reseñas)
                 </Text>
               </View>
             </View>
@@ -111,73 +90,66 @@ export const ArtistProfileScreen: React.FC<ArtistProfileScreenProps> = ({
         {/* Bento Asymmetric Row */}
         <View style={styles.asymmetricRow}>
           {/* Bento Card 2: Biometrics & Experience */}
-          {hasStats && (
+          {artist.stats && (
             <BentoCard style={styles.statsCard}>
               <Text style={styles.cardTitle}>MÉTRICAS</Text>
               <View style={styles.statList}>
-                {heightCm !== undefined && (
+                {artist.stats.heightCm && (
                   <View style={styles.statItem}>
                     <Text style={styles.statLabel}>Altura</Text>
-                    <Text style={styles.statValue}>{heightCm} cm</Text>
+                    <Text style={styles.statValue}>{artist.stats.heightCm} cm</Text>
                   </View>
                 )}
-                {instrument !== '' && (
+                {artist.stats.instrument && (
                   <View style={styles.statItem}>
                     <Text style={styles.statLabel}>Instrumento</Text>
-                    <Text style={styles.statValue} numberOfLines={1}>{instrument}</Text>
+                    <Text style={styles.statValue} numberOfLines={1}>{artist.stats.instrument}</Text>
                   </View>
                 )}
-                {experienceYears !== undefined && (
+                {artist.stats.experienceYears !== undefined && (
                   <View style={styles.statItem}>
                     <Text style={styles.statLabel}>Experiencia</Text>
-                    <Text style={styles.statValue}>{experienceYears} años</Text>
-                  </View>
-                )}
-                {skills.length > 0 && (
-                  <View style={styles.statItem}>
-                    <Text style={styles.statLabel}>Habilidades</Text>
-                    <Text style={styles.statValue} numberOfLines={1}>{skills.join(', ')}</Text>
+                    <Text style={styles.statValue}>{artist.stats.experienceYears} años</Text>
                   </View>
                 )}
               </View>
             </BentoCard>
           )}
 
-          {hasAudioPreview ? (
-            <BentoCard style={styles.playerCard}>
-              <Text style={styles.cardTitle}>PREVIEW AUDIO</Text>
-              <Text style={styles.trackTitle} numberOfLines={2}>Capricho Reinterpretation</Text>
-              
-              <View style={styles.waveformSimulator}>
-                {Array.from({ length: 12 }).map((_, idx) => {
-                  const heightVal = [12, 28, 45, 18, 38, 50, 22, 42, 30, 26, 16, 32][idx];
-                  return (
-                    <View
-                      key={idx}
-                      style={[
-                        styles.waveBar,
-                        { height: heightVal * 0.6 },
-                        isPlaying && idx < 6 ? styles.waveBarActive : null,
-                      ]}
-                    />
-                  );
-                })}
-              </View>
+          {/* Bento Card 3: Simulated Audio Player */}
+          <BentoCard style={styles.playerCard}>
+            <Text style={styles.cardTitle}>PREVIEW AUDIO</Text>
+            <Text style={styles.trackTitle} numberOfLines={2}>Capricho Reinterpretation</Text>
+            
+            <View style={styles.waveformSimulator}>
+              {Array.from({ length: 12 }).map((_, idx) => {
+                const heightVal = [12, 28, 45, 18, 38, 50, 22, 42, 30, 26, 16, 32][idx];
+                return (
+                  <View
+                    key={idx}
+                    style={[
+                      styles.waveBar,
+                      { height: heightVal * 0.6 },
+                      isPlaying && idx < 6 ? styles.waveBarActive : null,
+                    ]}
+                  />
+                );
+              })}
+            </View>
 
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setIsPlaying(!isPlaying)}
-                style={styles.playButton}
-              >
-                {isPlaying ? (
-                  <Pause size={16} color={Colors.text} fill={Colors.text} />
-                ) : (
-                  <Play size={16} color={Colors.text} fill={Colors.text} />
-                )}
-                <Text style={styles.playText}>{isPlaying ? 'PAUSA' : 'PLAY'}</Text>
-              </TouchableOpacity>
-            </BentoCard>
-          ) : null}
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => setIsPlaying(!isPlaying)}
+              style={styles.playButton}
+            >
+              {isPlaying ? (
+                <Pause size={16} color={Colors.text} fill={Colors.text} />
+              ) : (
+                <Play size={16} color={Colors.text} fill={Colors.text} />
+              )}
+              <Text style={styles.playText}>{isPlaying ? 'PAUSA' : 'PLAY'}</Text>
+            </TouchableOpacity>
+          </BentoCard>
         </View>
 
         {/* Bento Card 4: Detailed Biography */}

@@ -4,7 +4,7 @@
  */
 
 export const Colors = {
-  background: '#09090A',       // Absolute Deep Space Black
+  background: '#0B0B0B',       // Figma — Absolute background
   surface: '#16161A',          // Charcoal Metallic Surface
   primaryAccent: '#5D2FFA',    // Indigo Primary
   secondaryAccent: '#8D27F2',  // Purple Secondary

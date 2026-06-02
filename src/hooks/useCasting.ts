@@ -12,15 +12,17 @@ export const useCasting = () => {
 
   const handleSwipeRight = useCallback(async (artist: ArtistProfile) => {
     console.log(`Scouting Engine: Swipe right detected for ${artist.name}`);
-    const match = await createMatch(artist.id, 'current_active_project_id');
-    if (match) {
-      console.log(`Casting Workflow: chat set up for match ${match.id}`);
-    }
-    return match;
+    // Create match instance in pending state
+    await createMatch(artist.id, 'current_active_project_id');
   }, [createMatch]);
 
   const handleSwipeLeft = useCallback((artist: ArtistProfile) => {
     console.log(`Scouting Engine: Swipe left detected for ${artist.name} (ignored)`);
+  }, []);
+
+  const handleSwipeUp = useCallback(async (artist: ArtistProfile) => {
+    console.log(`Scouting Engine: Bookmark for ${artist.name}`);
+    // v2: persist via recordConnection('bookmark')
   }, []);
 
   const getMatchStatus = useCallback((artistId: string) => {
@@ -31,6 +33,7 @@ export const useCasting = () => {
   return {
     handleSwipeRight,
     handleSwipeLeft,
+    handleSwipeUp,
     getMatchStatus,
     matches: currentCastingMatches,
   };

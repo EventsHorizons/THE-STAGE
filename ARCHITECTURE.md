@@ -1,90 +1,167 @@
-# The Stage — Estructura del Proyecto
+# The Stage — Arquitectura Frontend
 
-## Resumen
-Esta app usa React Native + Expo con TypeScript para un descubrimiento de talento tipo Tinder/spotlight. El diseño actual ya implementa:
-- Feed de artistas en `src/screens/SpotlightFeedScreen.tsx`
-- Dashboard de búsqueda en `src/screens/ScoutDashboardScreen.tsx`
-- Perfil de artista en `src/screens/ArtistProfileScreen.tsx`
-- Navegación personalizada minimalista en `src/navigation/AppNavigator.tsx`
+React Native + Expo + TypeScript estricto. Descubrimiento de talento con mecánica **Tinder** (swipe) y perfiles **Bento Grid**.
 
-## Estructura principal del proyecto
+## Tokens visuales (Figma — no alterar)
 
-- `App.tsx`
-  - Punto de entrada de la app.
-  - Carga de fuentes y estado de navegación global.
+| Token | Valor | Uso |
+|-------|-------|-----|
+| Fondo absoluto | `#0B0B0B` | Canvas principal |
+| Superficies / tarjetas | `#16161A` | Cards, bento, tab bar |
+| Acento CTAs | `#7A0622` / gradiente actual en UI | Match, estados activos |
 
-- `src/navigation/`
-  - `AppNavigator.tsx` — barra inferior y enrutamiento de pantalla.
-  - `types.ts` — tipos de navegación typed, parámetros de tabs y stack.
+## Árbol de directorios
 
-- `src/screens/`
-  - `SpotlightFeedScreen.tsx` — discovery feed con acciones de match.
-  - `ScoutDashboardScreen.tsx` — buscador y filtros de talento.
-  - `ArtistProfileScreen.tsx` — perfil de artista con métricas y CTA.
-  - `CreateScreen.tsx` — placeholder para creación de proyectos.
-  - `MessagesScreen.tsx` — placeholder para la bandeja de mensajes.
+```
+app/
+├── App.tsx                          # NavigationContainer + fuentes Outfit
+├── app.json
+├── ARCHITECTURE.md                  # Este documento
+├── README-arquitectura.md           # Manual ISO / seguridad
+│
+└── src/
+    ├── components/                  # Kit UI reutilizable
+    │   ├── TalentCard.tsx           # Tarjeta discover + gestos
+    │   ├── ActionButtons.tsx        # Conectar / pasar / guardar
+    │   ├── ProfileHeader.tsx        # Avatar + validación
+    │   ├── CategoryChips.tsx        # Skills horizontales
+    │   ├── MultimediaCarousel.tsx   # Hasta 7 clips + imágenes
+    │   ├── SkeletonLoader.tsx       # Shimmer card / bento
+    │   ├── EmptyState.tsx           # Fin de feed
+    │   ├── ToastAlerts.tsx          # Match / errores
+    │   ├── BentoCard.tsx
+    │   ├── BentoGridShowcase.tsx
+    │   ├── PrimaryButton.tsx
+    │   ├── SpotlightFeed.tsx        # Variante legacy vertical
+    │   └── index.ts
+    │
+    ├── gestures/
+    │   ├── swipeEngine.ts           # Matemática pura del swipe
+    │   └── index.ts
+    │
+    ├── hooks/
+    │   ├── useSwipeGesture.ts       # PanResponder + Animated
+    │   ├── useCasting.ts            # like / pass / bookmark
+    │   └── useTalentSearch.ts
+    │
+    ├── navigation/
+    │   ├── types.ts                 # RootStackParamList + tabs
+    │   ├── MainTabNavigator.tsx     # 5 pestañas inferiores
+    │   ├── RootNavigator.tsx        # Stack global
+    │   └── AppNavigator.tsx         # Legacy (state local) — deprecado
+    │
+    ├── screens/
+    │   ├── SpotlightFeedScreen.tsx  # Discover — stack de tarjetas
+    │   ├── ScoutDashboardScreen.tsx # Explore — buscador
+    │   ├── CreateScreen.tsx         # Create — perfil propio
+    │   ├── MessagesScreen.tsx       # Messages
+    │   ├── ProfileSettingsScreen.tsx# Profile — ajustes cuenta
+    │   ├── ArtistProfileScreen.tsx  # TalentDetail — Bento perfil
+    │   └── GroupChatScreen.tsx      # GroupChat — proyectos (v3)
+    │
+    ├── services/
+    │   ├── api.ts                   # Axios + interceptores JWT
+    │   └── mockData.ts
+    │
+    ├── store/
+    │   ├── useStageStore.ts         # Feed, auth, matches
+    │   └── index.ts
+    │
+    ├── theme/
+    │   ├── constants.ts             # Tokens runtime (screens)
+    │   └── index.ts                 # Design system extendido
+    │
+    └── types/
+        ├── models.ts                # User, Profile, Connection, Group…
+        └── index.ts                 # ArtistProfile, CastingMatch…
+```
 
-- `src/components/`
-  - Contiene componentes reutilizables visuales como `BentoCard`, `PrimaryButton`, `SpotlightFeed`.
+## Mapa de navegación
 
-- `src/hooks/`
-  - Lógica de negocio encapsulada en hooks:
-    - `useCasting.ts`
-    - `useTalentSearch.ts`
+```mermaid
+flowchart TB
+  subgraph RootStack["RootStackParamList"]
+    MainTabs --> TabDiscover[Discover]
+    MainTabs --> TabExplore[Explore]
+    MainTabs --> TabCreate[Create]
+    MainTabs --> TabMessages[Messages]
+    MainTabs --> TabProfile[Profile]
+    TalentDetail["TalentDetail { profileId, artist? }"]
+    GroupChat["GroupChat { groupId }"]
+    Settings
+    Notifications
+  end
+  TabDiscover -->|tap / swipe| TalentDetail
+  TabExplore -->|select| TalentDetail
+```
 
-- `src/services/`
-  - `api.ts` — capa de servicio para futuras peticiones reales.
-  - `mockData.ts` — datos de talento usados por la demo.
+### `RootTabParamList`
 
-- `src/store/`
-  - `useStageStore.ts` — estado global de talento y feed.
-  - `index.ts` — exportación centralizada de stores.
+| Ruta | Pantalla | Función |
+|------|----------|---------|
+| `Discover` | `SpotlightFeedScreen` | Motor swipe (like / pass / bookmark) |
+| `Explore` | `ScoutDashboardScreen` | Categorías y grid |
+| `Create` | `CreateScreen` | Gestión perfil / 7 videos |
+| `Messages` | `MessagesScreen` | Chats 1:1 y grupos |
+| `Profile` | `ProfileSettingsScreen` | Cuenta y premium |
 
-- `src/theme/`
-  - `constants.ts` — colores, espaciados y tokens comunes.
-  - `index.ts` — exportaciones de tema.
+### `RootStackParamList`
 
-- `src/types/`
-  - `index.ts` — tipos principal de la app.
-  - `models.ts` — modelos estrictos de dominio.
+| Ruta | Parámetros |
+|------|------------|
+| `MainTabs` | `NavigatorScreenParams<RootTabParamList>` |
+| `TalentDetail` | `{ profileId, artist?, fromTab? }` |
+| `GroupChat` | `{ groupId, groupName? }` |
+| `Settings` | `undefined` |
+| `Notifications` | `undefined` |
 
-## Arquitectura de navegación tipada
+### Gestos → acciones
 
-### Tipos de navegación generados
-- `RootTabParamList`
-  - `Discover`
-  - `Explore`
-  - `Create`
-  - `Messages`
-  - `Profile`
+| Gesto | `TalentSwipeAction` | Efecto |
+|-------|---------------------|--------|
+| Derecha | `like` | Casting / interés (`createMatch`) |
+| Izquierda | `pass` | Descartar del feed |
+| Arriba | `bookmark` | Destacar (API `recordConnection`) |
+| Tap | — | `navigation.navigate('TalentDetail')` |
 
-- `RootStackParamList`
-  - `MainTabs`
-  - `TalentDetail` — `{ profileId: string; fromTab?: RootTabScreenName }`
-  - `GroupChat` — `{ groupId: string }`
-  - `Settings`
-  - `Notifications`
+Umbral por defecto: **25%** ancho horizontal, **18%** alto para arriba; velocidad **0.35**.
 
-### Utility types y metadata
-- `RootTabScreenName`
-- `RootStackScreenName`
-- `TalentSwipeAction`
-- `GestureDirection`
-- `SwipePayload`
-- `ScrollableTabMeta`
-- `ROOT_TAB_CONFIG`
+## Módulo de gestos
 
-## Flujo recomendado de ampliación
+- `src/gestures/swipeEngine.ts` — `resolveSwipeAction`, `getCardRotation`, `getSwipeExitOffset`
+- `src/hooks/useSwipeGesture.ts` — integración Animated + PanResponder
+- `src/components/TalentCard.tsx` — UI existente + sellos CONECTAR / PASAR / GUARDAR
 
-1. Migrar `AppNavigator.tsx` a un navigator basado en React Navigation.
-2. Mapear las rutas de `ROOT_TAB_CONFIG` a screens reales.
-3. Añadir placeholder screens para `Create` y `Messages`.
-4. Reemplazar `currentScreen` y `navigateTo` con `navigation.navigate(...)` typed.
-5. Conectar `TalentDetail` y `GroupChat` dentro del stack global.
+## Capa de red (`services/api.ts`)
 
-## Notas sobre el estado actual
+- Interceptor JWT (mock)
+- Sanitización XSS en respuestas
+- `fetchTalentFeed`, `sendCastingRequest`, `recordConnection`, `fetchBookmarks`
 
-- El código ya compila con `npx tsc -p . --noEmit`.
-- La app actual ya ha sido ampliada a cinco tabs: `Discover`, `Explore`, `Create`, `Messages`, `Profile`.
-- `CreateScreen.tsx` y `MessagesScreen.tsx` están implementados como placeholders funcionales.
-- La nueva tipología de navegación permite escalar a stack screens adicionales (`TalentDetail`, `GroupChat`, `Settings`, `Notifications`) sin romper la base actual.
+## Roadmap de producto
+
+### MVP (v1) — actual
+
+- [x] Feed swipe con foto
+- [x] Perfil Bento (`TalentDetail`)
+- [x] Navegación 5 tabs + stack tipado
+- [ ] Auth real + chat 1:1
+
+### Consolidación (v2)
+
+- [ ] 7 videobooks nativos (`expo-av`)
+- [ ] Buscador con filtros avanzados
+- [ ] Matching inteligente backend
+
+### Expansión (v3)
+
+- [ ] `GroupChat` + audiciones
+- [ ] Badges de validación
+- [ ] Analíticas de visitas al portafolio
+
+## Comandos
+
+```bash
+npm start
+npm run ts:check
+```

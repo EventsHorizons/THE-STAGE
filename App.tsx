@@ -1,26 +1,21 @@
 /**
- * @file App — "The Stage" — Self-contained MVP
- * @description Highly-optimized React Native app with modular architecture.
- * Full dark brutalist UI with Spotlight Feed + Artist Profile screens.
+ * @file App — "The Stage"
+ * @description Entry point: fonts, NavigationContainer, root stack + tabs.
  */
 
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  SafeAreaView,
-  StatusBar as RNStatusBar,
-  Platform,
-  ActivityIndicator,
-} from 'react-native';
+import React from 'react';
+import { View, ActivityIndicator } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useFonts, Outfit_400Regular, Outfit_600SemiBold, Outfit_700Bold, Outfit_800ExtraBold } from '@expo-google-fonts/outfit';
-
-// Import optimized modular components
-import { AppNavigator } from './src/navigation/AppNavigator';
-import { MOCK_TALENTS } from './src/services/mockData';
-import { Artist } from './src/types';
-import { RootTabScreenName } from './src/navigation/types';
+import {
+  useFonts,
+  Outfit_400Regular,
+  Outfit_600SemiBold,
+  Outfit_700Bold,
+  Outfit_800ExtraBold,
+} from '@expo-google-fonts/outfit';
+import { RootNavigator } from './src/navigation/RootNavigator';
 import { Colors } from './src/theme/constants';
 
 export default function App() {
@@ -31,17 +26,16 @@ export default function App() {
     Outfit_800ExtraBold,
   });
 
-  const [currentScreen, setCurrentScreen] = useState<RootTabScreenName>('Discover');
-  const [selectedArtist, setSelectedArtist] = useState<Artist>(MOCK_TALENTS[0]);
-
-  const navigateTo = (screen: RootTabScreenName, artist?: Artist) => {
-    if (artist) setSelectedArtist(artist);
-    setCurrentScreen(screen);
-  };
-
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, backgroundColor: Colors.background, justifyContent: 'center', alignItems: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: Colors.background,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <ActivityIndicator size="large" color={Colors.primaryAccent} />
       </View>
     );
@@ -49,11 +43,9 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <AppNavigator
-        currentScreen={currentScreen}
-        navigateTo={navigateTo}
-        selectedArtistForProfile={selectedArtist}
-      />
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
       <StatusBar style="light" />
     </SafeAreaProvider>
   );

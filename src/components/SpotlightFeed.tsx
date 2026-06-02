@@ -43,16 +43,8 @@ export const SpotlightFeed: React.FC<SpotlightFeedProps> = ({
   };
 
   const renderFeedItem = ({ item }: { readonly item: ArtistUser }) => {
-    const itemId = item.uuid ?? item.id;
-    const isBookmarked = !!bookmarkedIds[itemId];
-    const firstImage = item.portfolio?.find(m => m.type === 'image')?.uri || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000';
-    const feedStats = item.technicalStats as Record<string, unknown> | undefined;
-    const profileInstrument = typeof feedStats?.primaryInstrumentOrGenre === 'string'
-      ? feedStats.primaryInstrumentOrGenre
-      : '';
-    const profileSkills = Array.isArray(feedStats?.skills)
-      ? (feedStats.skills as unknown[]).filter((skill): skill is string => typeof skill === 'string')
-      : [];
+    const isBookmarked = !!bookmarkedIds[item.uuid];
+    const firstImage = item.portfolio.find(m => m.type === 'image')?.uri || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000';
 
     return (
       <View style={styles.feedItem}>
@@ -77,7 +69,7 @@ export const SpotlightFeed: React.FC<SpotlightFeedProps> = ({
           <TouchableOpacity
             style={[styles.floatingActionBtn, isBookmarked ? styles.activeActionBtn : null]}
             activeOpacity={0.8}
-            onPress={() => toggleBookmark(itemId)}
+            onPress={() => toggleBookmark(item.uuid)}
           >
             <Text style={styles.actionIcon}>{isBookmarked ? '★' : '☆'}</Text>
             <Text style={styles.actionMetric}>12.4k</Text>
@@ -105,10 +97,10 @@ export const SpotlightFeed: React.FC<SpotlightFeedProps> = ({
               <Text style={styles.featuredBadgeText}>ARTIST OF THE WEEK</Text>
             </View>
             <Text style={Typography.headerLarge}>{item.name}</Text>
-            <Text style={styles.categorySub}>{profileInstrument}</Text>
+            <Text style={styles.categorySub}>{item.technicalStats.primaryInstrumentOrGenre}</Text>
             
             <View style={styles.tagsContainer}>
-              {profileSkills.slice(0, 2).map((skill, idx) => (
+              {item.technicalStats.skills.slice(0, 2).map((skill, idx) => (
                 <View key={idx} style={styles.tagItem}>
                   <Text style={styles.tagText}>{skill}</Text>
                 </View>
@@ -122,7 +114,7 @@ export const SpotlightFeed: React.FC<SpotlightFeedProps> = ({
             activeOpacity={0.8}
             onPress={() => onViewPortfolio(item)}
           >
-            <Text style={styles.actionLabel}>View Portfolio</Text>
+            <Text style={Typography.actionLabel}>View Portfolio</Text>
             <Text style={styles.arrowCTA}>↗</Text>
           </TouchableOpacity>
         </View>
@@ -134,7 +126,7 @@ export const SpotlightFeed: React.FC<SpotlightFeedProps> = ({
     <FlatList
       data={profiles}
       renderItem={renderFeedItem}
-      keyExtractor={item => item.uuid ?? item.id}
+      keyExtractor={item => item.uuid}
       pagingEnabled
       snapToInterval={FEED_ITEM_HEIGHT}
       snapToAlignment="start"
@@ -322,11 +314,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.xs,
-  },
-  actionLabel: {
-    color: '#FFF',
-    fontSize: 14,
-    fontWeight: '700',
   },
   arrowCTA: {
     color: '#FFF',

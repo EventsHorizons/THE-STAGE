@@ -30,23 +30,9 @@ export const BentoGridShowcase: React.FC<BentoGridShowcaseProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  const profileStats = profile.technicalStats as Record<string, unknown> | undefined;
   const heroHeight = Math.round(width * GOLDEN_RATIO * 0.65);
-  const firstImage = profile.portfolio?.find(m => m.type === 'image')?.uri
+  const firstImage = profile.portfolio.find(m => m.type === 'image')?.uri
     || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000';
-  const profileLocation = profile.location ? `${profile.location.city}, ${profile.location.country}` : 'Unknown';
-  const profileFeature = typeof profileStats?.primaryInstrumentOrGenre === 'string'
-    ? profileStats.primaryInstrumentOrGenre
-    : typeof profileStats?.instrument === 'string'
-      ? profileStats.instrument
-      : 'Live Session';
-  const profileExperience = typeof profileStats?.experienceYears === 'number'
-    ? `${profileStats.experienceYears} yrs`
-    : '—';
-  const profileRating = typeof profileStats?.overallRating === 'number'
-    ? `★ ${profileStats.overallRating}`
-    : '★ 4.9';
-  const profileHeight = profile.biometricData?.heightCm ? `${profile.biometricData.heightCm} cm` : '—';
 
   return (
     <View style={GlobalStyles.container}>
@@ -79,7 +65,7 @@ export const BentoGridShowcase: React.FC<BentoGridShowcaseProps> = ({
             <Text style={Typography.headerLarge}>{profile.name}</Text>
             <View style={styles.locationRow}>
               <Text style={styles.locationText}>
-                {profileLocation}
+                {profile.location.city}, {profile.location.country}
               </Text>
               {profile.isVerified && (
                 <View style={styles.verifiedBadge}>
@@ -97,7 +83,7 @@ export const BentoGridShowcase: React.FC<BentoGridShowcaseProps> = ({
           <View style={[styles.bentoCard, styles.fullWidth, Shadows.deepRembrandt]}>
             <Text style={Typography.technicalMetric}>FEATURED PERFORMANCE</Text>
             <Text style={styles.mediaTitle}>
-              {profileFeature} — Studio Session
+              {profile.technicalStats.primaryInstrumentOrGenre} — Studio Session
             </Text>
 
             {/* Waveform */}
@@ -138,15 +124,15 @@ export const BentoGridShowcase: React.FC<BentoGridShowcaseProps> = ({
             <View style={styles.statList}>
               <View style={styles.statRow}>
                 <Text style={styles.statLabel}>Experience</Text>
-                <Text style={styles.statValue}>{profileExperience}</Text>
+                <Text style={styles.statValue}>{profile.technicalStats.experienceYears} yrs</Text>
               </View>
               <View style={styles.statRow}>
                 <Text style={styles.statLabel}>Rating</Text>
-                <Text style={styles.statValue}>{profileRating}</Text>
+                <Text style={styles.statValue}>★ {profile.technicalStats.overallRating}</Text>
               </View>
               <View style={styles.statRow}>
                 <Text style={styles.statLabel}>Height</Text>
-                <Text style={styles.statValue}>{profileHeight}</Text>
+                <Text style={styles.statValue}>{profile.biometricData.heightCm} cm</Text>
               </View>
             </View>
           </View>

@@ -28,8 +28,6 @@ export const Colors = {
   // High-fidelity accent
   accentPrimary: '#5D2FFA',
   accentSecondary: '#8D27F2',
-  accentBurgundy: '#A51364',
-  accentBurgundyLight: '#C71E7A',
   accentGradient: ['#5D2FFA', '#8D27F2'],
   accentGlow: 'rgba(93, 47, 250, 0.45)',
 
@@ -91,21 +89,6 @@ export const Typography = {
     fontWeight: '700' as const,
     letterSpacing: 1.5,
     textTransform: 'uppercase' as const,
-    color: Colors.textPrimary,
-  },
-  technicalMetric: {
-    fontFamily: 'Outfit_700Bold',
-    fontSize: 10,
-    fontWeight: '700' as const,
-    letterSpacing: 1.2,
-    textTransform: 'uppercase' as const,
-    color: Colors.accentPrimary,
-  },
-  actionLabel: {
-    fontFamily: 'Outfit_700Bold',
-    fontSize: 14,
-    fontWeight: '700' as const,
-    letterSpacing: 0.5,
     color: Colors.textPrimary,
   },
 };
