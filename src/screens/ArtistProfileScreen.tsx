@@ -3,7 +3,7 @@
  * @description Sleek Bento-grid presentation profile displaying metrics, portfolio visual images, and audio waveforms.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -32,6 +32,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { Artist } from '../types';
 import { MOCK_TALENTS } from '../services/mockData';
 import type { TalentDetailScreenProps } from '../navigation/types';
+import { useAudioSession } from '../hooks/useMediaCleanup';
 
 export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
   route,
@@ -41,6 +42,9 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
   const artist: Artist =
     paramArtist ?? MOCK_TALENTS.find((t) => t.id === profileId) ?? MOCK_TALENTS[0];
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const { play, pause, stop } = useAudioSession(artist.media?.audioUrl);
+
+  useEffect(() => () => stop(), [stop]);
 
   const handleCastingRequest = () => {
     Alert.alert(
@@ -139,7 +143,15 @@ export const ArtistProfileScreen: React.FC<TalentDetailScreenProps> = ({
 
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => setIsPlaying(!isPlaying)}
+              onPress={() => {
+                if (isPlaying) {
+                  pause();
+                  setIsPlaying(false);
+                } else {
+                  play();
+                  setIsPlaying(true);
+                }
+              }}
               style={styles.playButton}
             >
               {isPlaying ? (

@@ -1,23 +1,54 @@
 /**
- * @file MultimediaCarousel — "The Stage"
- * @description Short videobook carousel (up to 7 clips) + supporting images.
+ * @file MultimediaCarousel — lazy-loaded slides (expo-image), max 7 items
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import {
   View,
-  Image,
   ScrollView,
   Dimensions,
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
+import { Image } from 'expo-image';
 import type { MediaAsset } from '../types';
 import { Colors, Spacing } from '../theme/constants';
+import { MAX_MEDIA_PER_PROFILE } from '../types/models';
+import { useMediaCleanup } from '../hooks/useMediaCleanup';
 
 const { width } = Dimensions.get('window');
 const SLIDE_WIDTH = width - Spacing.md * 2;
+
+interface SlideProps {
+  readonly item: MediaAsset;
+  readonly index: number;
+  readonly isNearViewport: boolean;
+}
+
+const CarouselSlide = memo(function CarouselSlide({
+  item,
+  index,
+  isNearViewport,
+}: SlideProps) {
+  const uri = item.url ?? item.uri;
+  if (!isNearViewport || !uri) {
+    return <View style={styles.slide} />;
+  }
+
+  return (
+    <View style={styles.slide}>
+      <Image
+        source={{ uri }}
+        style={styles.media}
+        contentFit="cover"
+        cachePolicy="memory-disk"
+        recyclingKey={`carousel-${uri}-${index}`}
+        transition={200}
+      />
+    </View>
+  );
+});
 
 interface MultimediaCarouselProps {
   readonly items: readonly MediaAsset[];
@@ -26,15 +57,22 @@ interface MultimediaCarouselProps {
 
 export const MultimediaCarousel: React.FC<MultimediaCarouselProps> = ({
   items,
-  maxVideos = 7,
+  maxVideos = MAX_MEDIA_PER_PROFILE,
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const slides = items.slice(0, maxVideos);
+  const { registerCleanup } = useMediaCleanup();
 
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const onScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const index = Math.round(e.nativeEvent.contentOffset.x / SLIDE_WIDTH);
     setActiveIndex(index);
-  };
+  }, []);
+
+  React.useEffect(() => {
+    registerCleanup(() => {
+      void Image.clearMemoryCache();
+    });
+  }, [registerCleanup]);
 
   if (slides.length === 0) {
     return <View style={styles.empty} />;
@@ -50,11 +88,15 @@ export const MultimediaCarousel: React.FC<MultimediaCarouselProps> = ({
         scrollEventThrottle={16}
         decelerationRate="fast"
         snapToInterval={SLIDE_WIDTH}
+        removeClippedSubviews
       >
         {slides.map((item, index) => (
-          <View key={`${item.url}-${index}`} style={styles.slide}>
-            <Image source={{ uri: item.url ?? item.uri }} style={styles.media} resizeMode="cover" />
-          </View>
+          <CarouselSlide
+            key={`${item.url ?? item.uri}-${index}`}
+            item={item}
+            index={index}
+            isNearViewport={Math.abs(index - activeIndex) <= 1}
+          />
         ))}
       </ScrollView>
       <View style={styles.dots}>

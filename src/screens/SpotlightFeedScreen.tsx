@@ -1,9 +1,8 @@
 /**
- * @file SpotlightFeedScreen — "The Stage"
- * @description Discover stack: Tinder-style swipe cards with tap-to-profile.
+ * @file SpotlightFeedScreen — Discover swipe stack
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../theme/constants';
@@ -12,7 +11,7 @@ import { EmptyState } from '../components/EmptyState';
 import { ToastAlerts } from '../components/ToastAlerts';
 import { SkeletonLoader } from '../components/SkeletonLoader';
 import { useCasting } from '../hooks/useCasting';
-import { useStageStore } from '../store/useStageStore';
+import { useDiscoverFeedState } from '../store/selectors';
 import type { DiscoverTabNavigationProp, TalentSwipeAction } from '../navigation/types';
 import type { ArtistProfile } from '../types';
 
@@ -20,12 +19,17 @@ const { height } = Dimensions.get('window');
 
 export const SpotlightFeedScreen: React.FC = () => {
   const navigation = useNavigation<DiscoverTabNavigationProp>();
-  const { activeTalentFeed, isLoading, loadTalentFeed, dismissCurrentTalent } = useStageStore();
-  const { handleSwipeRight, handleSwipeLeft, handleSwipeUp } = useCasting();
+  const { current, next, isLoading, loadTalentFeed } = useDiscoverFeedState();
+  const { handleSwipeRight, handleSwipeLeft, handleSwipeUp, recentMatch, clearRecentMatch } =
+    useCasting();
   const [matchToast, setMatchToast] = useState<string | null>(null);
 
-  const currentArtist = activeTalentFeed[0];
-  const nextArtist = activeTalentFeed[1];
+  useEffect(() => {
+    if (recentMatch) {
+      setMatchToast('¡Match mutuo! Podéis iniciar conversación.');
+      clearRecentMatch();
+    }
+  }, [recentMatch, clearRecentMatch]);
 
   const openProfile = useCallback(
     (artist: ArtistProfile) => {
@@ -44,21 +48,20 @@ export const SpotlightFeedScreen: React.FC = () => {
         await handleSwipeRight(artist);
         setMatchToast(`Interés enviado a ${artist.name}`);
       } else if (action === 'pass') {
-        handleSwipeLeft(artist);
+        await handleSwipeLeft(artist);
       } else {
         await handleSwipeUp(artist);
         setMatchToast(`${artist.name} guardado en destacados`);
       }
-      dismissCurrentTalent(artist.id);
     },
-    [dismissCurrentTalent, handleSwipeLeft, handleSwipeRight, handleSwipeUp],
+    [handleSwipeLeft, handleSwipeRight, handleSwipeUp],
   );
 
-  if (isLoading && activeTalentFeed.length === 0) {
+  if (isLoading && !current) {
     return <SkeletonLoader variant="card" />;
   }
 
-  if (!currentArtist) {
+  if (!current) {
     return (
       <EmptyState
         title="No hay más talento"
@@ -71,22 +74,22 @@ export const SpotlightFeedScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {nextArtist ? (
+      {next ? (
         <TalentCard
-          key={nextArtist.id}
-          artist={nextArtist}
+          key={next.id}
+          artist={next}
           isTopCard={false}
           onSwipeComplete={() => undefined}
-          onTap={() => openProfile(nextArtist)}
+          onTap={() => openProfile(next)}
         />
       ) : null}
 
       <TalentCard
-        key={currentArtist.id}
-        artist={currentArtist}
+        key={current.id}
+        artist={current}
         isTopCard
-        onSwipeComplete={(action) => void onSwipeComplete(action, currentArtist)}
-        onTap={() => openProfile(currentArtist)}
+        onSwipeComplete={(action) => void onSwipeComplete(action, current)}
+        onTap={() => openProfile(current)}
       />
 
       <ToastAlerts

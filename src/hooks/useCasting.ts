@@ -1,34 +1,52 @@
 /**
- * @file useCasting Hook — "The Stage"
- * @description Logic for handling swipes and casting match lifecycle.
+ * @file useCasting — swipe → backend Connection / Match
  */
 
 import { useCallback } from 'react';
-import { useStageStore } from '../store/useStageStore';
-import { ArtistProfile } from '../types';
+import type { ArtistProfile, ConnectionAction } from '../types';
+import { useStageStore, selectApplySwipe } from '../store/useStageStore';
 
 export const useCasting = () => {
-  const { createMatch, currentCastingMatches } = useStageStore();
+  const applySwipe = useStageStore(selectApplySwipe);
+  const recentMatch = useStageStore((s) => s.recentMatch);
+  const currentCastingMatches = useStageStore((s) => s.currentCastingMatches);
+  const createMatch = useStageStore((s) => s.createMatch);
+  const clearRecentMatch = useStageStore((s) => s.clearRecentMatch);
 
-  const handleSwipeRight = useCallback(async (artist: ArtistProfile) => {
-    console.log(`Scouting Engine: Swipe right detected for ${artist.name}`);
-    // Create match instance in pending state
-    await createMatch(artist.id, 'current_active_project_id');
-  }, [createMatch]);
+  const runSwipe = useCallback(
+    async (artist: ArtistProfile, action: ConnectionAction) => {
+      const receiverUserId = artist.uuid ?? artist.id;
+      const match = await applySwipe(receiverUserId, action);
+      if (action === 'like' && !match) {
+        await createMatch(artist.id, 'active_project');
+      }
+      return match;
+    },
+    [applySwipe, createMatch],
+  );
 
-  const handleSwipeLeft = useCallback((artist: ArtistProfile) => {
-    console.log(`Scouting Engine: Swipe left detected for ${artist.name} (ignored)`);
-  }, []);
+  const handleSwipeRight = useCallback(
+    (artist: ArtistProfile) => runSwipe(artist, 'like'),
+    [runSwipe],
+  );
 
-  const handleSwipeUp = useCallback(async (artist: ArtistProfile) => {
-    console.log(`Scouting Engine: Bookmark for ${artist.name}`);
-    // v2: persist via recordConnection('bookmark')
-  }, []);
+  const handleSwipeLeft = useCallback(
+    (artist: ArtistProfile) => runSwipe(artist, 'pass'),
+    [runSwipe],
+  );
 
-  const getMatchStatus = useCallback((artistId: string) => {
-    const match = currentCastingMatches.find(m => m.artistId === artistId);
-    return match ? match.status : null;
-  }, [currentCastingMatches]);
+  const handleSwipeUp = useCallback(
+    (artist: ArtistProfile) => runSwipe(artist, 'bookmark'),
+    [runSwipe],
+  );
+
+  const getMatchStatus = useCallback(
+    (artistId: string) => {
+      const m = currentCastingMatches.find((x) => x.artistId === artistId);
+      return m?.status ?? null;
+    },
+    [currentCastingMatches],
+  );
 
   return {
     handleSwipeRight,
@@ -36,5 +54,7 @@ export const useCasting = () => {
     handleSwipeUp,
     getMatchStatus,
     matches: currentCastingMatches,
+    recentMatch,
+    clearRecentMatch,
   };
 };

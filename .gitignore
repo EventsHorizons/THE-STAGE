@@ -21,6 +21,17 @@ pnpm-debug.log*
 # local env files
 .env
 .env.*
+!.env.example
+
+# Python / Django
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/db.sqlite3
+backend/media/
+backend/staticfiles/
+backend/.env
 
 # Mac
 *.swp
