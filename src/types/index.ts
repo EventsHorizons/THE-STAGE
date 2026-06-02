@@ -73,3 +73,5 @@ export interface ScoutUser {
   readonly name: string;
   readonly role: 'scout';
 }
+
+export * from './models';

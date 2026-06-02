@@ -20,6 +20,7 @@ import { useFonts, Outfit_400Regular, Outfit_600SemiBold, Outfit_700Bold, Outfit
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { MOCK_TALENTS } from './src/services/mockData';
 import { Artist } from './src/types';
+import { RootTabScreenName } from './src/navigation/types';
 import { Colors } from './src/theme/constants';
 
 export default function App() {
@@ -30,10 +31,10 @@ export default function App() {
     Outfit_800ExtraBold,
   });
 
-  const [currentScreen, setCurrentScreen] = useState<'Spotlight' | 'Profile' | 'Scout'>('Spotlight');
+  const [currentScreen, setCurrentScreen] = useState<RootTabScreenName>('Discover');
   const [selectedArtist, setSelectedArtist] = useState<Artist>(MOCK_TALENTS[0]);
 
-  const navigateTo = (screen: 'Spotlight' | 'Profile' | 'Scout', artist?: Artist) => {
+  const navigateTo = (screen: RootTabScreenName, artist?: Artist) => {
     if (artist) setSelectedArtist(artist);
     setCurrentScreen(screen);
   };
