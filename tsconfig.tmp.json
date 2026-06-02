@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/types/index.ts",
+    "src/theme/index.ts",
+    "src/theme/constants.ts",
+    "src/store/useStageStore.ts",
+    "src/store/index.ts",
+    "src/hooks/useTalentSearch.ts",
+    "src/hooks/useCasting.ts",
+    "src/components/BentoGridShowcase.tsx",
+    "src/components/BentoCard.tsx",
+    "src/screens/ArtistProfileScreen.tsx",
+    "src/screens/SpotlightFeedScreen.tsx",
+    "src/services/mockData.ts",
+    "src/services/api.ts"
+  ]
+}

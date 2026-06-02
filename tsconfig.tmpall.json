@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "App.tsx",
+    "App-debug.tsx",
+    "src/types/index.ts",
+    "src/theme/index.ts",
+    "src/theme/constants.ts",
+    "src/store/useStageStore.ts",
+    "src/store/index.ts",
+    "src/screens/SpotlightFeedScreen.tsx",
+    "src/screens/ScoutDashboardScreen.tsx",
+    "src/screens/ArtistProfileScreen.tsx",
+    "src/components/BentoGridShowcase.tsx",
+    "src/components/BentoCard.tsx",
+    "src/components/AtomicComponents.tsx",
+    "src/components/PrimaryButton.tsx",
+    "src/components/SpotlightFeed.tsx",
+    "src/services/mockData.ts",
+    "src/services/api.ts",
+    "src/navigation/AppNavigator.tsx",
+    "src/hooks/useCasting.ts",
+    "src/hooks/useTalentSearch.ts"
+  ]
+}

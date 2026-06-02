@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Stage — Premium Talent Discovery</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Lucide Icons for clean SVG iconography -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Premium Header & Showcase Title -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="logo-accent"></div>
+      <span class="logo-text">THE STAGE</span>
+    </div>
+    <div class="header-tag">PREMIUM MOBILE UI SPECIFICATION</div>
+    <div class="header-modes">
+      <button class="mode-btn active" id="btn-showcase">Interactive Showcase</button>
+      <button class="mode-btn" id="btn-focus">Focus View</button>
+    </div>
+  </header>
+
+  <main class="showcase-container" id="showcase-container">
+    
+    <!-- SCREEN 1: SPOTLIGHT FEED -->
+    <section class="mobile-screen-wrapper" data-screen="spotlight">
+      <div class="screen-label">
+        <span class="screen-num">01</span>
+        <span class="screen-title">Spotlight Feed</span>
+      </div>
+      
+      <div class="mobile-device">
+        <div class="screen-content spotlight-screen">
+          <!-- Video Background overlay -->
+          <div class="video-overlay-gradient"></div>
+          
+          <!-- Simulated Video content (Visual Abstract CSS animation & Particle layer) -->
+          <div class="video-simulator">
+            <div class="abstract-glow red-glow"></div>
+            <div class="abstract-glow orange-glow"></div>
+            <div class="grid-overlay"></div>
+            <div class="live-indicator">
+              <span class="pulse-dot"></span>
+              LIVE PERFORMANCE
+            </div>
+          </div>
+
+          <!-- Top Status / Nav -->
+          <div class="screen-top-bar">
+            <span class="brand-sub">THE STAGE</span>
+            <div class="top-pills">
+              <span class="pill active">Trending</span>
+              <span class="pill">Nearby</span>
+            </div>
+            <button class="icon-btn search-trigger"><i data-lucide="search"></i></button>
+          </div>
+
+          <!-- Floating Right Actions -->
+          <div class="floating-actions">
+            <button class="action-btn" id="action-bookmark" title="Bookmark">
+              <div class="btn-glow-layer"></div>
+              <i data-lucide="bookmark" class="icon-state"></i>
+              <span class="action-count">12.4k</span>
+            </button>
+            <button class="action-btn" id="action-share" title="Share">
+              <div class="btn-glow-layer"></div>
+              <i data-lucide="share-2"></i>
+              <span class="action-count">3.8k</span>
+            </button>
+            <button class="action-btn match-btn" id="action-match" title="Contact Match">
+              <div class="match-pulse"></div>
+              <i data-lucide="zap"></i>
+              <span class="action-label">MATCH</span>
+            </button>
+          </div>
+
+          <!-- Bottom Meta & CTA Overlay -->
+          <div class="bottom-overlay">
+            <div class="artist-meta">
+              <div class="artist-badge">Spotlight of the Week</div>
+              <h2 class="artist-name">Elena Rostova</h2>
+              <p class="artist-category">Musician / Classical Guitarist</p>
+              <div class="tags-container">
+                <span class="mini-tag">Neo-Classical</span>
+                <span class="mini-tag">Improv</span>
+              </div>
+            </div>
+            
+            <button class="view-portfolio-btn" id="btn-view-portfolio">
+              <span>View Portfolio</span>
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+
+          <!-- Safe Area Bottom -->
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: ARTIST PROFILE -->
+    <section class="mobile-screen-wrapper" data-screen="profile">
+      <div class="screen-label">
+        <span class="screen-num">02</span>
+        <span class="screen-title">Artist Profile</span>
+      </div>
+      
+      <div class="mobile-device">
+        <div class="screen-content profile-screen">
+          <!-- Main scrollable frame -->
+          <div class="scroll-container">
+            
+            <!-- Sleek Bento Header -->
+            <div class="profile-header-card">
+              <div class="profile-image-wrapper">
+                <div class="gradient-border-mask"></div>
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Elena Rostova" class="profile-portrait">
+                <div class="availability-badge">
+                  <span class="availability-dot"></span>
+                  Available
+                </div>
+              </div>
+              <div class="profile-meta-text">
+                <h1 class="profile-name">Elena Rostova</h1>
+                <p class="profile-location"><i data-lucide="map-pin"></i> Vienna, Austria</p>
+                <div class="rating-badge">
+                  <i data-lucide="star"></i>
+                  <span>4.9 (48 Reviews)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bento Grid Layout (4-column based container) -->
+            <div class="bento-grid">
+              
+              <!-- Bento Card 1: Media Player Widget (Spans 2 rows or full width) -->
+              <div class="bento-card media-player-card">
+                <div class="card-header-label">Featured Track</div>
+                <div class="media-title">Capricho Árabe (Modern Reinterpretation)</div>
+                
+                <!-- Custom Audio Waveform -->
+                <div class="audio-waveform-container" id="waveform-trigger">
+                  <div class="waveform-bars">
+                    <!-- Bars generated dynamically via JS for precision, but pre-populated fallback -->
+                    <div class="bar" style="height: 20%"></div>
+                    <div class="bar" style="height: 40%"></div>
+                    <div class="bar" style="height: 60%"></div>
+                    <div class="bar" style="height: 35%"></div>
+                    <div class="bar" style="height: 80%"></div>
+                    <div class="bar" style="height: 95%"></div>
+                    <div class="bar" style="height: 50%"></div>
+                    <div class="bar" style="height: 70%"></div>
+                    <div class="bar" style="height: 30%"></div>
+                    <div class="bar" style="height: 85%"></div>
+                    <div class="bar" style="height: 65%"></div>
+                    <div class="bar" style="height: 45%"></div>
+                    <div class="bar" style="height: 90%"></div>
+                    <div class="bar" style="height: 25%"></div>
+                    <div class="bar" style="height: 60%"></div>
+                    <div class="bar" style="height: 75%"></div>
+                    <div class="bar" style="height: 40%"></div>
+                    <div class="bar" style="height: 85%"></div>
+                    <div class="bar" style="height: 50%"></div>
+                    <div class="bar" style="height: 30%"></div>
+                  </div>
+                  <div class="waveform-progress"></div>
+                </div>
+
+                <!-- Player Controls -->
+                <div class="player-controls">
+                  <span class="time-stamp">01:14</span>
+                  <button class="play-btn" id="play-pause-btn">
+                    <i data-lucide="play" id="play-icon"></i>
+                  </button>
+                  <span class="time-stamp">03:42</span>
+                </div>
+              </div>
+
+              <!-- Bento Card 2: Stats widget (Compact specs) -->
+              <div class="bento-card stats-card">
+                <div class="card-header-label">Technical Stats</div>
+                <div class="stats-list">
+                  <div class="stat-item">
+                    <span class="stat-name">Experience</span>
+                    <span class="stat-value">8 Years</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-name">Inst. Type</span>
+                    <span class="stat-value">Acoustic/Midi</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-name">Repertoire</span>
+                    <span class="stat-value">120+ Tracks</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bento Card 3: Monochrome Social Badges -->
+              <div class="bento-card socials-card">
+                <div class="card-header-label">Connected Platforms</div>
+                <div class="social-badges-grid">
+                  <a href="#" class="social-badge">
+                    <i data-lucide="music-2"></i>
+                    <span>Spotify</span>
+                  </a>
+                  <a href="#" class="social-badge">
+                    <i data-lucide="youtube"></i>
+                    <span>YouTube</span>
+                  </a>
+                  <a href="#" class="social-badge">
+                    <i data-lucide="instagram"></i>
+                    <span>Instagram</span>
+                  </a>
+                  <a href="#" class="social-badge">
+                    <i data-lucide="globe"></i>
+                    <span>Website</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Bento Card 4: Short Bio / About -->
+              <div class="bento-card bio-card">
+                <div class="card-header-label">Artist Bio</div>
+                <p class="bio-text">Bridging the gap between classical acoustic mastery and modern digital soundscapes. Vienna Conservatory alumni.</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Sticky Nav & Action -->
+          <div class="sticky-bottom-bar">
+            <div class="nav-blur-bg"></div>
+            <div class="nav-content">
+              <button class="nav-icon-btn active"><i data-lucide="user"></i></button>
+              <button class="invite-casting-btn">
+                <span>Invite to Casting</span>
+                <i data-lucide="send"></i>
+              </button>
+              <button class="nav-icon-btn"><i data-lucide="message-square"></i></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: SCOUT DASHBOARD -->
+    <section class="mobile-screen-wrapper" data-screen="scout">
+      <div class="screen-label">
+        <span class="screen-num">03</span>
+        <span class="screen-title">Scout Dashboard</span>
+      </div>
+      
+      <div class="mobile-device">
+        <div class="screen-content scout-screen">
+          
+          <!-- Top Minimalist Search Bar -->
+          <div class="scout-header">
+            <h2 class="scout-title">Discover Talent</h2>
+            <div class="search-bar-container">
+              <i data-lucide="search" class="search-icon"></i>
+              <input type="text" placeholder="Search musicians, dancers, vocalists..." class="search-input" id="talent-search">
+              <button class="filter-btn"><i data-lucide="sliders-horizontal"></i></button>
+            </div>
+          </div>
+
+          <!-- Horizontal Scrolling Filter Chips -->
+          <div class="filter-chips-scroller">
+            <div class="filter-chips">
+              <button class="chip active" data-filter="all">All Talent</button>
+              <button class="chip" data-filter="available">Available Now</button>
+              <button class="chip" data-filter="videobook">With Videobook</button>
+              <button class="chip" data-filter="instrumentalist">Guitarist</button>
+              <button class="chip" data-filter="vocalist">Vocalist</button>
+              <button class="chip" data-filter="dancer">Dancer</button>
+            </div>
+          </div>
+
+          <!-- Clean Two-Column Grid Display of Talent -->
+          <div class="talent-scroll-area">
+            <div class="talent-grid">
+              
+              <!-- Card 1 -->
+              <div class="talent-card" data-tags="available videobook instrumentalist">
+                <div class="talent-card-image">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Marcus Vance">
+                  <span class="talent-status-dot"></span>
+                </div>
+                <div class="talent-card-info">
+                  <h3 class="talent-card-name">Marcus Vance</h3>
+                  <p class="talent-card-role">Acoustic Percussionist</p>
+                  <div class="talent-card-metrics">
+                    <span><i data-lucide="star"></i> 4.9</span>
+                    <span><i data-lucide="map-pin"></i> London</span>
+                  </div>
+                  <div class="talent-card-footer">
+                    <span class="card-tag">Videobook</span>
+                    <button class="card-action-btn"><i data-lucide="chevron-right"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="talent-card" data-tags="videobook vocalist">
+                <div class="talent-card-image">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80" alt="Sasha Grey">
+                  <span class="talent-status-dot offline"></span>
+                </div>
+                <div class="talent-card-info">
+                  <h3 class="talent-card-name">Sasha Grey</h3>
+                  <p class="talent-card-role">Jazz/Neo-Soul Vocalist</p>
+                  <div class="talent-card-metrics">
+                    <span><i data-lucide="star"></i> 5.0</span>
+                    <span><i data-lucide="map-pin"></i> Paris</span>
+                  </div>
+                  <div class="talent-card-footer">
+                    <span class="card-tag">Neo-Soul</span>
+                    <button class="card-action-btn"><i data-lucide="chevron-right"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="talent-card" data-tags="available dancer">
+                <div class="talent-card-image">
+                  <img src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=300&q=80" alt="Leo Chen">
+                  <span class="talent-status-dot"></span>
+                </div>
+                <div class="talent-card-info">
+                  <h3 class="talent-card-name">Leo Chen</h3>
+                  <p class="talent-card-role">Contemporary Dancer</p>
+                  <div class="talent-card-metrics">
+                    <span><i data-lucide="star"></i> 4.8</span>
+                    <span><i data-lucide="map-pin"></i> Berlin</span>
+                  </div>
+                  <div class="talent-card-footer">
+                    <span class="card-tag">Choreographer</span>
+                    <button class="card-action-btn"><i data-lucide="chevron-right"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="talent-card" data-tags="available instrumentalist">
+                <div class="talent-card-image">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Elena Rostova">
+                  <span class="talent-status-dot"></span>
+                </div>
+                <div class="talent-card-info">
+                  <h3 class="talent-card-name">Elena Rostova</h3>
+                  <p class="talent-card-role">Classical Guitarist</p>
+                  <div class="talent-card-metrics">
+                    <span><i data-lucide="star"></i> 4.9</span>
+                    <span><i data-lucide="map-pin"></i> Vienna</span>
+                  </div>
+                  <div class="talent-card-footer">
+                    <span class="card-tag">Acoustic</span>
+                    <button class="card-action-btn"><i data-lucide="chevron-right"></i></button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Sticky Dashboard Nav -->
+          <div class="sticky-bottom-bar">
+            <div class="nav-blur-bg"></div>
+            <div class="nav-content justify-around">
+              <button class="nav-icon-btn"><i data-lucide="home"></i></button>
+              <button class="nav-icon-btn active"><i data-lucide="compass"></i></button>
+              <button class="nav-icon-btn"><i data-lucide="briefcase"></i></button>
+              <button class="nav-icon-btn"><i data-lucide="bell"></i></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Info & Control Panel -->
+  <footer class="app-footer">
+    <div class="tech-spec">
+      <h4>Design System Implementation Details</h4>
+      <ul>
+        <li><span class="color-swatch bg-deepblack"></span> Background: <code>#09090A</code></li>
+        <li><span class="color-swatch bg-charcoal"></span> Card Surface: <code>#16161A</code></li>
+        <li><span class="color-swatch bg-burgundy"></span> Accent Color: <code>#7A0622</code></li>
+        <li><i data-lucide="text"></i> Typo: Syne (Headers), Plus Jakarta Sans (UI elements)</li>
+      </ul>
+    </div>
+    <div class="credits">
+      Designed with extreme fidelity & passion for premium aesthetics.
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
