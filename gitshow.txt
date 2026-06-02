@@ -1,7 +1,0 @@
-El origen 'msstore' requiere que vea los siguientes contratos antes de usarlo.
-Terms of Transaction: https://aka.ms/microsoft-store-terms-of-transaction
-El origen requiere que la región geográfica de dos letras de la máquina actual se envíe al servicio back-end para que funcione correctamente (por ejemplo, "EE. UU.").
-
-¿Está de acuerdo con todos los términos de los contratos de origen?
-[Y] Sí  [N] No: Se ha producido un error inesperado al ejecutar el comando: 
-0x8a150042 : Error al leer la entrada en el símbolo del sistema
